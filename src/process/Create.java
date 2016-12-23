@@ -225,7 +225,6 @@ public class Create {
 			e.printStackTrace();
 		}
 	}
-
 	/**
 	 * 创建数据表语法
 	 * 
