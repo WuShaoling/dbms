@@ -1,186 +1,185 @@
 package process;
 
 import org.json.JSONException;
-
 import preprocess.Constant;
 import preprocess.Error;
 import preprocess.PreProcess;
 import preprocess.Util;
 
 /**
- * ¥¶¿Ìdrop
- * 
+ * Â§ÑÁêÜdrop
+ *
  * @author WSL
  */
 public class Drop {
-	private static String[] arr = null;
-	private static String sql;
+    private static String[] arr = null;
+    private static String sql;
 
-	public static void Check(String[] arrs) {
-		arr = arrs;
-		sql = Util.arrayToString(arrs);
-		if (arr.length >= 2) {
-			switch (arr[1]) {
-			case "database":
-				dropDatabase();
-				break;
-			case "table":
-				dropTable();
-				break;
-			case "user":
-				dropUser();
-				break;
-			case "view":
-				dropView();
-				break;
-			default:
-				Util.showInTextArea(sql, Error.COMMAND_ERROR);
-				break;
-			}
-		} else {
-			Util.showInTextArea(sql, Error.COMMAND_ERROR);
-		}
-	}
+    public static void Check(String[] arrs) {
+        arr = arrs;
+        sql = Util.arrayToString(arrs);
+        if (arr.length >= 2) {
+            switch (arr[1]) {
+                case "database":
+                    dropDatabase();
+                    break;
+                case "table":
+                    dropTable();
+                    break;
+                case "user":
+                    dropUser();
+                    break;
+                case "view":
+                    dropView();
+                    break;
+                default:
+                    Util.showInTextArea(sql, Error.COMMAND_ERROR);
+                    break;
+            }
+        } else {
+            Util.showInTextArea(sql, Error.COMMAND_ERROR);
+        }
+    }
 
-	/**
-	 * …æ≥˝ ”Õº
-	 */
-	private static void dropView() {
-		// ºÏ≤È”Ô∑®
-		if (arr.length != 3) {
-			Util.showInTextArea(sql, Error.COMMAND_ERROR);
-			return;
-		}
-		// ºÏ≤È «∑Ò—°÷– ˝æ›ø‚
-		if (Constant.currentdatabase == null) {
-			Util.showInTextArea(sql, Error.NO_DATABASE_SELECTED);
-			return;
-		}
-		// ºÏ≤È ”Õº «∑Ò¥Ê‘⁄
-		try {
-			if (!Constant.currentdatabase.getJSONObject("view").has(arr[2])) {
-				Util.showInTextArea(sql, Error.VIEW_NOT_EXIST + " : " + arr[2]);
-				return;
-			}
-		} catch (JSONException e1) {
-			e1.printStackTrace();
-		}
-		// ºÏ≤È»®œﬁ
-		if (!CheckPermission.checkDropViewPermission()) {
-			Util.showInTextArea(sql, Error.ACCESS_DENIED);
-			return;
-		}
-		try {
-			Constant.currentdatabase.getJSONObject("view").remove(arr[2]);
-			Util.writeData(Constant.PATH_DICTIONARY, Constant.DICTIONARY.toString());
-			Util.showInTextArea(sql, "ok");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    /**
+     * Âà†Èô§ËßÜÂõæ
+     */
+    private static void dropView() {
+        // Ê£ÄÊü•ËØ≠Ê≥ï
+        if (arr.length != 3) {
+            Util.showInTextArea(sql, Error.COMMAND_ERROR);
+            return;
+        }
+        // Ê£ÄÊü•ÊòØÂê¶ÈÄâ‰∏≠Êï∞ÊçÆÂ∫ì
+        if (Constant.currentdatabase == null) {
+            Util.showInTextArea(sql, Error.NO_DATABASE_SELECTED);
+            return;
+        }
+        // Ê£ÄÊü•ËßÜÂõæÊòØÂê¶Â≠òÂú®
+        try {
+            if (!Constant.currentdatabase.getJSONObject("view").has(arr[2])) {
+                Util.showInTextArea(sql, Error.VIEW_NOT_EXIST + " : " + arr[2]);
+                return;
+            }
+        } catch (JSONException e1) {
+            e1.printStackTrace();
+        }
+        // Ê£ÄÊü•ÊùÉÈôê
+        if (!CheckPermission.checkDropViewPermission()) {
+            Util.showInTextArea(sql, Error.ACCESS_DENIED);
+            return;
+        }
+        try {
+            Constant.currentdatabase.getJSONObject("view").remove(arr[2]);
+            Util.writeData(Constant.PATH_DICTIONARY, Constant.DICTIONARY.toString());
+            Util.showInTextArea(sql, "ok");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * …æ≥˝ ˝æ›ø‚
-	 */
-	public static void dropDatabase() {
-		try {
-			// ºÏ≤È”Ô∑®
-			if (arr.length != 3) {
-				Util.showInTextArea(sql, Error.COMMAND_ERROR);
-				return;
-			}
-			// ºÏ≤È ˝æ›ø‚ «∑Ò¥Ê‘⁄
-			if (!Constant.DICTIONARY.has(arr[2])) {
-				Util.showInTextArea(sql, Error.DATABASE_NOT_EXIST + " : " + arr[2]);
-				return;
-			}
-			// ºÏ≤È»®œﬁ
-			if (!CheckPermission.checkDropDatabasePermission()) {
-				Util.showInTextArea(sql, Error.ACCESS_DENIED);
-				return;
-			}
-			// ÷¥––
-			if (arr[2].equals(Constant.databasename)) {
-				Constant.databasename = null;
-				Constant.currentdatabase = null;
-			}
-			Constant.DICTIONARY.remove(arr[2]);
-			Util.writeData(Constant.PATH_DICTIONARY, Constant.DICTIONARY.toString());
-			Util.deletePath(Constant.PATH_ROOT + arr[2]);
-			Util.showInTextArea(sql, "ok");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    /**
+     * Âà†Èô§Êï∞ÊçÆÂ∫ì
+     */
+    public static void dropDatabase() {
+        try {
+            // Ê£ÄÊü•ËØ≠Ê≥ï
+            if (arr.length != 3) {
+                Util.showInTextArea(sql, Error.COMMAND_ERROR);
+                return;
+            }
+            // Ê£ÄÊü•Êï∞ÊçÆÂ∫ìÊòØÂê¶Â≠òÂú®
+            if (!Constant.DICTIONARY.has(arr[2])) {
+                Util.showInTextArea(sql, Error.DATABASE_NOT_EXIST + " : " + arr[2]);
+                return;
+            }
+            // Ê£ÄÊü•ÊùÉÈôê
+            if (!CheckPermission.checkDropDatabasePermission()) {
+                Util.showInTextArea(sql, Error.ACCESS_DENIED);
+                return;
+            }
+            // ÊâßË°å
+            if (arr[2].equals(Constant.databasename)) {
+                Constant.databasename = null;
+                Constant.currentdatabase = null;
+            }
+            Constant.DICTIONARY.remove(arr[2]);
+            Util.writeData(Constant.PATH_DICTIONARY, Constant.DICTIONARY.toString());
+            Util.deletePath(Constant.PATH_ROOT + arr[2]);
+            Util.showInTextArea(sql, "ok");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * …æ≥˝±Ì
-	 */
-	public static void dropTable() {
-		// ºÏ≤È”Ô∑®
-		if (arr.length != 3) {
-			Util.showInTextArea(sql, Error.COMMAND_ERROR);
-			return;
-		}
-		// ºÏ≤È «∑Ò—°÷– ˝æ›ø‚
-		if (Constant.currentdatabase == null) {
-			Util.showInTextArea(sql, Error.NO_DATABASE_SELECTED);
-			return;
-		}
-		// ºÏ≤È±Ì «∑Ò¥Ê‘⁄
-		try {
-			if (!Constant.currentdatabase.getJSONObject("table").has(arr[2])) {
-				Util.showInTextArea(sql, Error.TABLE_NOT_EXIST + " : " + arr[2]);
-				return;
-			}
-		} catch (JSONException e1) {
-			e1.printStackTrace();
-		}
-		// ºÏ≤È»®œﬁ
-		if (!CheckPermission.checkDropTablePermission()) {
-			Util.showInTextArea(sql, Error.ACCESS_DENIED);
-			return;
-		}
-		try {
-			Constant.currentdatabase.getJSONObject("table").remove(arr[2]);
-			Util.writeData(Constant.PATH_DICTIONARY, Constant.DICTIONARY.toString());
-			Util.deleteFile(Constant.PATH_ROOT + Constant.databasename + "/" + arr[2] + ".sql");
-			Util.showInTextArea(sql, "ok");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    /**
+     * Âà†Èô§Ë°®
+     */
+    public static void dropTable() {
+        // Ê£ÄÊü•ËØ≠Ê≥ï
+        if (arr.length != 3) {
+            Util.showInTextArea(sql, Error.COMMAND_ERROR);
+            return;
+        }
+        // Ê£ÄÊü•ÊòØÂê¶ÈÄâ‰∏≠Êï∞ÊçÆÂ∫ì
+        if (Constant.currentdatabase == null) {
+            Util.showInTextArea(sql, Error.NO_DATABASE_SELECTED);
+            return;
+        }
+        // Ê£ÄÊü•Ë°®ÊòØÂê¶Â≠òÂú®
+        try {
+            if (!Constant.currentdatabase.getJSONObject("table").has(arr[2])) {
+                Util.showInTextArea(sql, Error.TABLE_NOT_EXIST + " : " + arr[2]);
+                return;
+            }
+        } catch (JSONException e1) {
+            e1.printStackTrace();
+        }
+        // Ê£ÄÊü•ÊùÉÈôê
+        if (!CheckPermission.checkDropTablePermission()) {
+            Util.showInTextArea(sql, Error.ACCESS_DENIED);
+            return;
+        }
+        try {
+            Constant.currentdatabase.getJSONObject("table").remove(arr[2]);
+            Util.writeData(Constant.PATH_DICTIONARY, Constant.DICTIONARY.toString());
+            Util.deleteFile(Constant.PATH_ROOT + Constant.databasename + "/" + arr[2] + ".sql");
+            Util.showInTextArea(sql, "ok");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * …æ≥˝”√ªß
-	 */
-	public static void dropUser() {
-		// ºÏ≤È”Ô∑®
-		if (arr.length != 3) {
-			Util.showInTextArea(sql, Error.COMMAND_ERROR);
-			return;
-		}
-		// ºÏ≤È «∑Ò¥Ê‘⁄
-		if (!Constant.USERS.has(arr[2])) {
-			Util.showInTextArea(sql, Error.USER_EXIST + " : " + arr[2]);
-			return;
-		}
-		// ºÏ≤È»®œﬁ
-		if (!CheckPermission.checkDropUserPermission()) {
-			Util.showInTextArea(sql, Error.ACCESS_DENIED);
-			return;
-		}
-		try {
-			if (Constant.username.equals(arr[2])) {
-				Constant.username = null;
-				Constant.currentuser = null;
-				PreProcess.islogin = false;
-			}
-			Constant.USERS.remove(arr[2]);
-			Util.writeData(Constant.PATH_USERS, Constant.USERS.toString());
-			Util.showInTextArea(sql, "ok");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    /**
+     * Âà†Èô§Áî®Êà∑
+     */
+    public static void dropUser() {
+        // Ê£ÄÊü•ËØ≠Ê≥ï
+        if (arr.length != 3) {
+            Util.showInTextArea(sql, Error.COMMAND_ERROR);
+            return;
+        }
+        // Ê£ÄÊü•ÊòØÂê¶Â≠òÂú®
+        if (!Constant.USERS.has(arr[2])) {
+            Util.showInTextArea(sql, Error.USER_EXIST + " : " + arr[2]);
+            return;
+        }
+        // Ê£ÄÊü•ÊùÉÈôê
+        if (!CheckPermission.checkDropUserPermission()) {
+            Util.showInTextArea(sql, Error.ACCESS_DENIED);
+            return;
+        }
+        try {
+            if (Constant.username.equals(arr[2])) {
+                Constant.username = null;
+                Constant.currentuser = null;
+                PreProcess.islogin = false;
+            }
+            Constant.USERS.remove(arr[2]);
+            Util.writeData(Constant.PATH_USERS, Constant.USERS.toString());
+            Util.showInTextArea(sql, "ok");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

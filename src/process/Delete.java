@@ -1,132 +1,130 @@
 package process;
 
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.json.JSONException;
-
 import preprocess.Constant;
 import preprocess.Error;
 import preprocess.Util;
 
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
- * ´¦Àídelete
- * 
- * @author W_SL
+ * å¤„ç†delete
  *
+ * @author W_SL
  */
 public class Delete {
-	private static List<String[]> alldata = null;
-	private static String sql = null;
-	private static String table = null;
-	private static String condition = null;
-	private static Pattern pattern = null;
-	private static Matcher matcher = null;
-	private static boolean isview = false;
-	private static String view = "";
+    private static List<String[]> alldata = null;
+    private static String sql = null;
+    private static String table = null;
+    private static String condition = null;
+    private static Pattern pattern = null;
+    private static Matcher matcher = null;
+    private static boolean isview = false;
+    private static String view = "";
 
-	public static void Check(String[] arrs) {
-		sql = Util.arrayToString(arrs);
-		condition = null;
-		table = null;
-		alldata = null;
-		view = "";
-		// ¼ì²éÊÇ·ñÑ¡ÖĞÊı¾İ¿â
-		if (Constant.currentdatabase == null) {
-			Util.showInTextArea(sql, Error.NO_DATABASE_SELECTED);
-			return;
-		}
-		// ¼ì²éÓï·¨
-		if (!checkDeleteGrammer()) {
-			Util.showInTextArea(sql, Error.COMMAND_ERROR);
-			return;
-		}
-		// ¼ì²é±íÊÇ·ñ´æÔÚ
-		try {
-			if (!Constant.currentdatabase.getJSONObject("table").has(table)) {
-				if (!Constant.currentdatabase.getJSONObject("view").has(table)) {
-					Util.showInTextArea(sql, Error.TABLE_NOT_EXIST + " : " + table);
-					return;
-				}else{
-					isview = true;
-					view = table;
-					table = Constant.currentdatabase.getJSONObject("view").getJSONObject(table).getString("table");
-				}
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		// ¼ì²éÈ¨ÏŞ
-		if (!CheckPermission.checkPermission(table, isview, "delete")) {
-			Util.showInTextArea(sql, Error.ACCESS_DENIED);
-			return;
-		}
-		// ´¦ÀíµÚÒ»ÖÖÇé¿ö£¬²»´øwhereµÄ
-		if (condition == null) {
-			deleteWithoutCondition();
-		} else {
-			deleteWithCondition();
-		}
-	}
+    public static void Check(String[] arrs) {
+        sql = Util.arrayToString(arrs);
+        condition = null;
+        table = null;
+        alldata = null;
+        view = "";
+        // æ£€æŸ¥æ˜¯å¦é€‰ä¸­æ•°æ®åº“
+        if (Constant.currentdatabase == null) {
+            Util.showInTextArea(sql, Error.NO_DATABASE_SELECTED);
+            return;
+        }
+        // æ£€æŸ¥è¯­æ³•
+        if (!checkDeleteGrammer()) {
+            Util.showInTextArea(sql, Error.COMMAND_ERROR);
+            return;
+        }
+        // æ£€æŸ¥è¡¨æ˜¯å¦å­˜åœ¨
+        try {
+            if (!Constant.currentdatabase.getJSONObject("table").has(table)) {
+                if (!Constant.currentdatabase.getJSONObject("view").has(table)) {
+                    Util.showInTextArea(sql, Error.TABLE_NOT_EXIST + " : " + table);
+                    return;
+                } else {
+                    isview = true;
+                    view = table;
+                    table = Constant.currentdatabase.getJSONObject("view").getJSONObject(table).getString("table");
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        // æ£€æŸ¥æƒé™
+        if (!CheckPermission.checkPermission(table, isview, "delete")) {
+            Util.showInTextArea(sql, Error.ACCESS_DENIED);
+            return;
+        }
+        // å¤„ç†ç¬¬ä¸€ç§æƒ…å†µï¼Œä¸å¸¦whereçš„
+        if (condition == null) {
+            deleteWithoutCondition();
+        } else {
+            deleteWithCondition();
+        }
+    }
 
-	/**
-	 * ÓĞÌõ¼ş£¬ÏÈ»ñµÃÊı¾İ£¬Ñ¡ÔñÊı¾İ£¬Ğ©Êı¾İ
-	 */
-	private static void deleteWithCondition() {
-		alldata = GetResultWithCheck.getAllResult(sql, table, view, condition, true, isview);
-		if (alldata == null) {
-			return;
-		}
-		try {
-			int size = Constant.currentdatabase.getJSONObject("table").getJSONObject(table).getInt("size");
-			Util.showInTextArea(sql, "ok, " + String.valueOf(size - alldata.size()) + " rows deleted!");
-			Util.updateTableSize(table, alldata.size());
-			Util.writeData(Constant.PATH_ROOT + Constant.databasename + "/" + table + ".sql",
-					Util.parseListToTableFormat(alldata));
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
+    /**
+     * æœ‰æ¡ä»¶ï¼Œå…ˆè·å¾—æ•°æ®ï¼Œé€‰æ‹©æ•°æ®ï¼Œäº›æ•°æ®
+     */
+    private static void deleteWithCondition() {
+        alldata = GetResultWithCheck.getAllResult(sql, table, view, condition, true, isview);
+        if (alldata == null) {
+            return;
+        }
+        try {
+            int size = Constant.currentdatabase.getJSONObject("table").getJSONObject(table).getInt("size");
+            Util.showInTextArea(sql, "ok, " + String.valueOf(size - alldata.size()) + " rows deleted!");
+            Util.updateTableSize(table, alldata.size());
+            Util.writeData(Constant.PATH_ROOT + Constant.databasename + "/" + table + ".sql",
+                    Util.parseListToTableFormat(alldata));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * Ã»ÓĞÌõ¼ş£¬É¾³ıËùÓĞµÄÊı¾İ ,ÏÈÉ¾³ıÎÄ¼ş£¬ÔÙ´´½¨ÎÄ¼ş
-	 */
-	private static void deleteWithoutCondition() {
-		Util.deleteFile(Constant.PATH_ROOT + "/" + Constant.databasename + "/" + table + ".sql");
-		Util.creatFile(Constant.PATH_ROOT + "/" + Constant.databasename + "/" + table + ".sql");
-		try {
-			Util.showInTextArea(sql,
-					"ok, " + Constant.currentdatabase.getJSONObject("table").getJSONObject(table).getInt("size")
-							+ " rows deleted!");
-			Util.updateTableSize(table, 0);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
+    /**
+     * æ²¡æœ‰æ¡ä»¶ï¼Œåˆ é™¤æ‰€æœ‰çš„æ•°æ® ,å…ˆåˆ é™¤æ–‡ä»¶ï¼Œå†åˆ›å»ºæ–‡ä»¶
+     */
+    private static void deleteWithoutCondition() {
+        Util.deleteFile(Constant.PATH_ROOT + "/" + Constant.databasename + "/" + table + ".sql");
+        Util.creatFile(Constant.PATH_ROOT + "/" + Constant.databasename + "/" + table + ".sql");
+        try {
+            Util.showInTextArea(sql,
+                    "ok, " + Constant.currentdatabase.getJSONObject("table").getJSONObject(table).getInt("size")
+                            + " rows deleted!");
+            Util.updateTableSize(table, 0);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * ¼ì²éÉ¾³ıÓï·¨
-	 * 
-	 * @return
-	 */
-	public static boolean checkDeleteGrammer() {
-		String match = "delete from ([a-z0-9_]+) where (.+)";
-		pattern = Pattern.compile(match);
-		matcher = pattern.matcher(sql);
-		if (matcher.matches()) {
-			table = matcher.group(1);
-			condition = matcher.group(2);
-			return true;
-		} else {
-			match = "delete from ([a-z0-9_]+)";
-			pattern = Pattern.compile(match);
-			matcher = pattern.matcher(sql);
-			if (matcher.matches()) {
-				table = matcher.group(1);
-				return true;
-			}
-		}
-		return false;
-	}
+    /**
+     * æ£€æŸ¥åˆ é™¤è¯­æ³•
+     *
+     * @return
+     */
+    public static boolean checkDeleteGrammer() {
+        String match = "delete from ([a-z0-9_]+) where (.+)";
+        pattern = Pattern.compile(match);
+        matcher = pattern.matcher(sql);
+        if (matcher.matches()) {
+            table = matcher.group(1);
+            condition = matcher.group(2);
+            return true;
+        } else {
+            match = "delete from ([a-z0-9_]+)";
+            pattern = Pattern.compile(match);
+            matcher = pattern.matcher(sql);
+            if (matcher.matches()) {
+                table = matcher.group(1);
+                return true;
+            }
+        }
+        return false;
+    }
 }

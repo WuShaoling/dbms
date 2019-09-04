@@ -3,25 +3,24 @@ package preprocess;
 import org.json.JSONObject;
 
 /**
- * ³£Á¿
- * 
- * @author WSL
+ * å¸¸é‡
  *
+ * @author WSL
  */
 public class Constant {
-	public static char SPLIT = 8;// ·Ö¸ô·û
+    public static char SPLIT = 8;// åˆ†éš”ç¬¦
 
-	public static JSONObject currentuser = null;// µ±Ç°ÓÃ»§
-	public static JSONObject currentdatabase = null;// µ±Ç°Êı¾İ¿â
-	public static String username = null; // µ±Ç°ÓÃ»§Ãû
-	public static String databasename = null;// µ±Ç°Êı¾İ¿âÃû
+    public static JSONObject currentuser = null;// å½“å‰ç”¨æˆ·
+    public static JSONObject currentdatabase = null;// å½“å‰æ•°æ®åº“
+    public static String username = null; // å½“å‰ç”¨æˆ·å
+    public static String databasename = null;// å½“å‰æ•°æ®åº“å
 
-	// Êı¾İ×Öµä
-	public static JSONObject USERS = null; // ×Ó×Öµä£¬ÓÃ»§×Öµä
-	public static JSONObject DICTIONARY = null;// ×Öµä
+    // æ•°æ®å­—å…¸
+    public static JSONObject USERS = null; // å­å­—å…¸ï¼Œç”¨æˆ·å­—å…¸
+    public static JSONObject DICTIONARY = null;// å­—å…¸
 
-	// Â·¾¶
-	public static String PATH_ROOT = "./"; // ¸ùÄ¿Â¼
-	public static final String PATH_USERS = PATH_ROOT + "users.sql"; // ÓÃ»§ÎÄ¼şÄ¿Â¼
-	public static final String PATH_DICTIONARY = PATH_ROOT + "dictionary.sql"; // Êı¾İ¿â×ÖµäÎÄ¼şÄ¿Â¼
+    // è·¯å¾„
+    public static String PATH_ROOT = "./db"; // æ ¹ç›®å½•
+    public static final String PATH_USERS = PATH_ROOT + "users.sql"; // ç”¨æˆ·æ–‡ä»¶ç›®å½•
+    public static final String PATH_DICTIONARY = PATH_ROOT + "dictionary.sql"; // æ•°æ®åº“å­—å…¸æ–‡ä»¶ç›®å½•
 }

@@ -1,219 +1,217 @@
 package process;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import preprocess.Constant;
+import preprocess.Error;
+import preprocess.Util;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import preprocess.Constant;
-import preprocess.Error;
-import preprocess.Util;
-
 /**
- * Ìí¼ÓºÍÉ¾³ıÈ¨ÏŞ
- * 
- * @author WSL
+ * æ·»åŠ å’Œåˆ é™¤æƒé™
  *
+ * @author WSL
  */
 public class GrantAndRevoke {
-	private static String[] users = null; // ÁÙÊ±´æ´¢ÓÃ»§
-	private static String[] tables = null; // ÁÙÊ±´æ´¢±í
-	private static List<String> permissions = null;
-	private static String sql = null;
+    private static String[] users = null; // ä¸´æ—¶å­˜å‚¨ç”¨æˆ·
+    private static String[] tables = null; // ä¸´æ—¶å­˜å‚¨è¡¨
+    private static List<String> permissions = null;
+    private static String sql = null;
 
-	public static void Check(String[] arr) {
-		users = null;
-		tables = null;
-		permissions = null;
-		sql = Util.arrayToString(arr);
-		// ¼ì²éÊÇ·ñÑ¡ÖĞÊı¾İ¿â
-		if (Constant.currentdatabase == null) {
-			Util.showInTextArea(sql, Error.NO_DATABASE_SELECTED);
-			return;
-		}
-		// ¼ì²éÓï·¨²¢ĞŞ¸ÄÁÙÊ±Êı×éµÄÖµ
-		String tt = null;
-		if (arr[0].equals("grant")) {
-			if ((tt = checkGrammar(sql, "grant (.{1,}) on table (.*) to (.{1,})")) != null) {
-				Util.showInTextArea(sql, tt);
-				return;
-			}
-		} else {
-			if ((tt = checkGrammar(sql, "revoke (.{1,}) on table (.*) from (.{1,})")) != null) {
-				Util.showInTextArea(sql, tt);
-				return;
-			}
-		}
-		// ¼ì²éËùÓĞµÄ±íÊÇ·ñ¶¼´æÔÚ
-		if (!checkTablesExsit()) {
-			return;
-		}
-		// ¼ì²éËùÓĞµÄÓÃ»§ÊÇ·ñ¶¼´æÔÚ
-		if (!checkUsersExsit()) {
-			return;
-		}
-		// ¼ì²éÈ¨ÏŞ
-		if (!CheckPermission.checkGrantAndRevokePermission()) {
-			Util.showInTextArea(sql, Error.ACCESS_DENIED);
-			return;
-		}
-		if (arr[0].equals("grant")) { // Ôö¼ÓÈ¨ÏŞ
-			grantPermission();
-		} else { // É¾³ıÈ¨ÏŞ
-			revokePermission();
-		}
-	}
+    public static void Check(String[] arr) {
+        users = null;
+        tables = null;
+        permissions = null;
+        sql = Util.arrayToString(arr);
+        // æ£€æŸ¥æ˜¯å¦é€‰ä¸­æ•°æ®åº“
+        if (Constant.currentdatabase == null) {
+            Util.showInTextArea(sql, Error.NO_DATABASE_SELECTED);
+            return;
+        }
+        // æ£€æŸ¥è¯­æ³•å¹¶ä¿®æ”¹ä¸´æ—¶æ•°ç»„çš„å€¼
+        String tt = null;
+        if (arr[0].equals("grant")) {
+            if ((tt = checkGrammar(sql, "grant (.{1,}) on table (.*) to (.{1,})")) != null) {
+                Util.showInTextArea(sql, tt);
+                return;
+            }
+        } else {
+            if ((tt = checkGrammar(sql, "revoke (.{1,}) on table (.*) from (.{1,})")) != null) {
+                Util.showInTextArea(sql, tt);
+                return;
+            }
+        }
+        // æ£€æŸ¥æ‰€æœ‰çš„è¡¨æ˜¯å¦éƒ½å­˜åœ¨
+        if (!checkTablesExsit()) {
+            return;
+        }
+        // æ£€æŸ¥æ‰€æœ‰çš„ç”¨æˆ·æ˜¯å¦éƒ½å­˜åœ¨
+        if (!checkUsersExsit()) {
+            return;
+        }
+        // æ£€æŸ¥æƒé™
+        if (!CheckPermission.checkGrantAndRevokePermission()) {
+            Util.showInTextArea(sql, Error.ACCESS_DENIED);
+            return;
+        }
+        if (arr[0].equals("grant")) { // å¢åŠ æƒé™
+            grantPermission();
+        } else { // åˆ é™¤æƒé™
+            revokePermission();
+        }
+    }
 
-	/**
-	 * ¼ì²é·ÖÅäÈ¨ÏŞÓï·¨£¬Óï·¨ÕıÈ·¸øÓÃ»§ºÍ±íÊı×é¸³Öµ
-	 * 
-	 * @param sql
-	 * @return
-	 */
-	public static String checkGrammar(String sql, String match) {
-		Pattern pattern = Pattern.compile(match);
-		Matcher matcher = pattern.matcher(sql);
-		if (matcher.matches()) {
-			permissions = new LinkedList<String>();
-			String group2 = matcher.group(2);
-			String group3 = matcher.group(3);
-			if (matcher.group(1).trim().equals("all privileges")) {
-				permissions.add("insert");
-				permissions.add("delete");
-				permissions.add("update");
-				permissions.add("select");
-			} else {
-				String[] array = matcher.group(1).split(",");
-				for (int i = 0; i < array.length; i++) {
-					String tt = array[i].trim();
-					if (!(tt.equals("select") || tt.equals("delete") || tt.equals("update") || tt.equals("insert"))) {
-						permissions = null;
-						return "Failed, " + tt + " is not exsit";
-					} else {
-						permissions.add(tt);
-					}
-				}
-			}
-			pattern = Pattern.compile("( ?.{1,} ?, ?)+");
-			matcher = pattern.matcher(group2 + ",");
-			if (matcher.matches()) {
-				pattern = Pattern.compile("( ?.{1,} ?, ?)+");
-				matcher = pattern.matcher(group3 + ",");
-				if (matcher.matches()) {
-					tables = group2.split(",");
-					users = group3.split(",");
-					for (int i = 0; i < tables.length; i++)
-						tables[i] = tables[i].trim();
-					for (int i = 0; i < users.length; i++)
-						users[i] = users[i].trim();
-					return null;
-				}
-			}
-		}
-		return Error.COMMAND_ERROR;
-	}
+    /**
+     * æ£€æŸ¥åˆ†é…æƒé™è¯­æ³•ï¼Œè¯­æ³•æ­£ç¡®ç»™ç”¨æˆ·å’Œè¡¨æ•°ç»„èµ‹å€¼
+     *
+     * @param sql
+     * @return
+     */
+    public static String checkGrammar(String sql, String match) {
+        Pattern pattern = Pattern.compile(match);
+        Matcher matcher = pattern.matcher(sql);
+        if (matcher.matches()) {
+            permissions = new LinkedList<String>();
+            String group2 = matcher.group(2);
+            String group3 = matcher.group(3);
+            if (matcher.group(1).trim().equals("all privileges")) {
+                permissions.add("insert");
+                permissions.add("delete");
+                permissions.add("update");
+                permissions.add("select");
+            } else {
+                String[] array = matcher.group(1).split(",");
+                for (int i = 0; i < array.length; i++) {
+                    String tt = array[i].trim();
+                    if (!(tt.equals("select") || tt.equals("delete") || tt.equals("update") || tt.equals("insert"))) {
+                        permissions = null;
+                        return "Failed, " + tt + " is not exsit";
+                    } else {
+                        permissions.add(tt);
+                    }
+                }
+            }
+            pattern = Pattern.compile("( ?.{1,} ?, ?)+");
+            matcher = pattern.matcher(group2 + ",");
+            if (matcher.matches()) {
+                pattern = Pattern.compile("( ?.{1,} ?, ?)+");
+                matcher = pattern.matcher(group3 + ",");
+                if (matcher.matches()) {
+                    tables = group2.split(",");
+                    users = group3.split(",");
+                    for (int i = 0; i < tables.length; i++)
+                        tables[i] = tables[i].trim();
+                    for (int i = 0; i < users.length; i++)
+                        users[i] = users[i].trim();
+                    return null;
+                }
+            }
+        }
+        return Error.COMMAND_ERROR;
+    }
 
-	/**
-	 * ¼ì²éËùÓĞ±íÊÇ·ñ´æÔÚ
-	 * 
-	 * @return
-	 */
-	public static boolean checkTablesExsit() {
-		for (String table : tables) {
-			try {
-				if (!Constant.currentdatabase.getJSONObject("table").has(table)) {
-					Util.showInTextArea(sql, Error.TABLE_NOT_EXIST + " : " + table);
-					return false;
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
-		return true;
-	}
+    /**
+     * æ£€æŸ¥æ‰€æœ‰è¡¨æ˜¯å¦å­˜åœ¨
+     *
+     * @return
+     */
+    public static boolean checkTablesExsit() {
+        for (String table : tables) {
+            try {
+                if (!Constant.currentdatabase.getJSONObject("table").has(table)) {
+                    Util.showInTextArea(sql, Error.TABLE_NOT_EXIST + " : " + table);
+                    return false;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
+    }
 
-	/**
-	 * ¼ì²éËùÓĞµÄÓÃ»§ÊÇ·ñ´æÔÚ
-	 * 
-	 * @return
-	 */
-	public static boolean checkUsersExsit() {
-		for (String user : users) {
-			if (!Constant.USERS.has(user)) {
-				Util.showInTextArea(sql, Error.USER_NOT_EXIST + " : " + user);
-				return false;
-			}
-		}
-		return true;
-	}
+    /**
+     * æ£€æŸ¥æ‰€æœ‰çš„ç”¨æˆ·æ˜¯å¦å­˜åœ¨
+     *
+     * @return
+     */
+    public static boolean checkUsersExsit() {
+        for (String user : users) {
+            if (!Constant.USERS.has(user)) {
+                Util.showInTextArea(sql, Error.USER_NOT_EXIST + " : " + user);
+                return false;
+            }
+        }
+        return true;
+    }
 
-	/**
-	 * Ìí¼ÓÈ¨ÏŞ
-	 */
-	public static void grantPermission() {
-		try {
-			for (String user : users) {
-				// Èç¹ûµ±Ç°ÓÃ»§µÄµ±Ç°Êı¾İ¿â²»´æÔÚ£¬´´½¨Êı¾İ¿â£¬´´½¨ËùÓĞµÄ±í
-				if (!Constant.USERS.getJSONObject(user).has(Constant.databasename)) {
-					JSONObject db = new JSONObject();
-					for (int i = 0; i < tables.length; i++) {
-						JSONObject temp = new JSONObject();
-						for (int j = 0; j < permissions.size(); j++)
-							temp.put(permissions.get(j), 1);
-						db.put(tables[i], temp);
-					}
-					Constant.USERS.getJSONObject(user).put(Constant.databasename, db);
-				} else {// ÓĞÊı¾İ¿â
-					JSONObject db = Constant.USERS.getJSONObject(user).getJSONObject(Constant.databasename);
-					for (String table : tables) {
-						JSONObject temp_table;
-						if (!db.has(table)) {// Ã»ÓĞ±í
-							temp_table = new JSONObject();
-							for (int j = 0; j < permissions.size(); j++)
-								temp_table.put(permissions.get(j), 1);
-							db.put(table, temp_table);
-						} else {
-							temp_table = db.getJSONObject(table);
-							for (int j = 0; j < permissions.size(); j++)
-								temp_table.put(permissions.get(j), 1);
-						}
-					}
-				}
-			}
-			Util.writeData(Constant.PATH_USERS, Constant.USERS.toString());
-			Util.showInTextArea(sql, "ok");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    /**
+     * æ·»åŠ æƒé™
+     */
+    public static void grantPermission() {
+        try {
+            for (String user : users) {
+                // å¦‚æœå½“å‰ç”¨æˆ·çš„å½“å‰æ•°æ®åº“ä¸å­˜åœ¨ï¼Œåˆ›å»ºæ•°æ®åº“ï¼Œåˆ›å»ºæ‰€æœ‰çš„è¡¨
+                if (!Constant.USERS.getJSONObject(user).has(Constant.databasename)) {
+                    JSONObject db = new JSONObject();
+                    for (int i = 0; i < tables.length; i++) {
+                        JSONObject temp = new JSONObject();
+                        for (int j = 0; j < permissions.size(); j++)
+                            temp.put(permissions.get(j), 1);
+                        db.put(tables[i], temp);
+                    }
+                    Constant.USERS.getJSONObject(user).put(Constant.databasename, db);
+                } else {// æœ‰æ•°æ®åº“
+                    JSONObject db = Constant.USERS.getJSONObject(user).getJSONObject(Constant.databasename);
+                    for (String table : tables) {
+                        JSONObject temp_table;
+                        if (!db.has(table)) {// æ²¡æœ‰è¡¨
+                            temp_table = new JSONObject();
+                            for (int j = 0; j < permissions.size(); j++)
+                                temp_table.put(permissions.get(j), 1);
+                            db.put(table, temp_table);
+                        } else {
+                            temp_table = db.getJSONObject(table);
+                            for (int j = 0; j < permissions.size(); j++)
+                                temp_table.put(permissions.get(j), 1);
+                        }
+                    }
+                }
+            }
+            Util.writeData(Constant.PATH_USERS, Constant.USERS.toString());
+            Util.showInTextArea(sql, "ok");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * É¾³ıÈ¨ÏŞ
-	 */
-	public static void revokePermission() {
-		try {
-			for (String user : users) {
-				if (Constant.USERS.getJSONObject(user).has(Constant.databasename)) {
-					JSONObject db = Constant.USERS.getJSONObject(user).getJSONObject(Constant.databasename);
-					for (String table : tables) {
-						if (db.has(table)) {
-							JSONObject temp_table = db.getJSONObject(table);
-							for (int i = 0; i < permissions.size(); i++) {
-								if (temp_table.has(permissions.get(i))) {
-									temp_table.remove(permissions.get(i));
-								}
-							}
-						}
-					}
-				}
-			}
-			Util.writeData(Constant.PATH_USERS, Constant.USERS.toString());
-			Util.showInTextArea(sql, "ok");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    /**
+     * åˆ é™¤æƒé™
+     */
+    public static void revokePermission() {
+        try {
+            for (String user : users) {
+                if (Constant.USERS.getJSONObject(user).has(Constant.databasename)) {
+                    JSONObject db = Constant.USERS.getJSONObject(user).getJSONObject(Constant.databasename);
+                    for (String table : tables) {
+                        if (db.has(table)) {
+                            JSONObject temp_table = db.getJSONObject(table);
+                            for (int i = 0; i < permissions.size(); i++) {
+                                if (temp_table.has(permissions.get(i))) {
+                                    temp_table.remove(permissions.get(i));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            Util.writeData(Constant.PATH_USERS, Constant.USERS.toString());
+            Util.showInTextArea(sql, "ok");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

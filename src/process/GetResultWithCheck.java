@@ -1,269 +1,263 @@
 package process;
 
+import beans.ItemCondition;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import preprocess.Constant;
+import preprocess.Error;
+import preprocess.Util;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import beans.ItemCondition;
-import preprocess.Constant;
-import preprocess.Error;
-import preprocess.Util;
-
 /**
- * 
  * @author WSL
- *
  */
 public class GetResultWithCheck {
-	private static List<String[]> aalldata = null; // alldataÈ¡·´
-	private static List<String[]> alldata = null;
-	private static Pattern pattern = null;
-	private static Matcher matcher = null;
-	private static String match_and = "([a-z0-9_]+ ?(>|<|=|!=) ?.+)( and [a-z0-9_]+ ?(>|<|=|!=) ?.+){1,}";
-	private static String match_or = "([a-z0-9_]+ ?(>|<|=|!=) ?.+)( or [a-z0-9_]+ ?(>|<|=|!=) ?.+){1,}";
-	private static String match_single = "([a-z0-9_]+ ?(>|<|=|!=) ?.+)";
-	public static int flag = 0;
+    private static List<String[]> aalldata = null; // alldataå–å
+    private static List<String[]> alldata = null;
+    private static Pattern pattern = null;
+    private static Matcher matcher = null;
+    private static String match_and = "([a-z0-9_]+ ?(>|<|=|!=) ?.+)( and [a-z0-9_]+ ?(>|<|=|!=) ?.+){1,}";
+    private static String match_or = "([a-z0-9_]+ ?(>|<|=|!=) ?.+)( or [a-z0-9_]+ ?(>|<|=|!=) ?.+){1,}";
+    private static String match_single = "([a-z0-9_]+ ?(>|<|=|!=) ?.+)";
+    public static int flag = 0;
 
-	/**
-	 * »ñµÃÆ¥ÅäµÄ½á¹û¼¯
-	 * 
-	 * @param sql
-	 * @param table
-	 * @param condition
-	 * @param delete
-	 * @return
-	 */
-	public static List<String[]> getAllResult(String sql, String table, String view, String condition, boolean delete,
-			boolean isview) {
-		// »ñµÃwhere×Ó¾äµÄÌõ¼ş
-		flag = 0;
-		alldata = Util.readDataFromTable(table);
-		aalldata = new LinkedList<String[]>();
-		List<ItemCondition> list = getMulitCondition(sql, condition, table, view, isview);
-		if (list == null) {
-			return null;
-		}
-		if (flag == 1) {
-			getDataWithAndCondition(list, table);
-		} else if (flag == 2) {
-			getDataWithOrCondition(list, table);
-		}
-		if (delete)
-			return aalldata;
-		return alldata;
-	}
+    /**
+     * è·å¾—åŒ¹é…çš„ç»“æœé›†
+     *
+     * @param sql
+     * @param table
+     * @param condition
+     * @param delete
+     * @return
+     */
+    public static List<String[]> getAllResult(String sql, String table, String view, String condition, boolean delete,
+                                              boolean isview) {
+        // è·å¾—whereå­å¥çš„æ¡ä»¶
+        flag = 0;
+        alldata = Util.readDataFromTable(table);
+        aalldata = new LinkedList<String[]>();
+        List<ItemCondition> list = getMulitCondition(sql, condition, table, view, isview);
+        if (list == null) {
+            return null;
+        }
+        if (flag == 1) {
+            getDataWithAndCondition(list, table);
+        } else if (flag == 2) {
+            getDataWithOrCondition(list, table);
+        }
+        if (delete)
+            return aalldata;
+        return alldata;
+    }
 
-	/**
-	 * »ñµÃ²»È·¶¨whereÌõ¼şµÄÄÚÈİ ¼´²»È·¶¨ and or »¹ÊÇ Ã»ÓĞandÃ»ÓĞor
-	 * 
-	 * @param sql
-	 * @param condition
-	 * @param table
-	 * @return
-	 */
-	public static List<ItemCondition> getMulitCondition(String sql, String condition, String table, String view, boolean isview) {
-		alldata = Util.readDataFromTable(table);
-		aalldata = new LinkedList<String[]>();
-		List<ItemCondition> list;
-		flag = 0;
-		if (((list = getSingleCondition(match_and, "and", condition)) != null)) {
-			flag = 1;
-		} else if ((list = getSingleCondition(match_or, "or", condition)) != null) {
-			flag = 2;
-		} else if ((list = getSingleCondition(match_single, null, condition)) != null) {
-			flag = 1;
-		}
-		// ÄÚÈİ²»Æ¥Åä
-		if (flag == 0) {
-			Util.showInTextArea(sql, Error.COMMAND_ERROR);
-			return null;
-		}
-		// Êı¾İÀàĞÍ²»Æ¥Åä
-		String tt = table;
-		if(isview)
-			tt = view;
-		if (!checkAllConditions(sql, list, tt, isview)) {
-			return null;
-		}
-		return list;
-	}
+    /**
+     * è·å¾—ä¸ç¡®å®šwhereæ¡ä»¶çš„å†…å®¹ å³ä¸ç¡®å®š and or è¿˜æ˜¯ æ²¡æœ‰andæ²¡æœ‰or
+     *
+     * @param sql
+     * @param condition
+     * @param table
+     * @return
+     */
+    public static List<ItemCondition> getMulitCondition(String sql, String condition, String table, String view, boolean isview) {
+        alldata = Util.readDataFromTable(table);
+        aalldata = new LinkedList<String[]>();
+        List<ItemCondition> list;
+        flag = 0;
+        if (((list = getSingleCondition(match_and, "and", condition)) != null)) {
+            flag = 1;
+        } else if ((list = getSingleCondition(match_or, "or", condition)) != null) {
+            flag = 2;
+        } else if ((list = getSingleCondition(match_single, null, condition)) != null) {
+            flag = 1;
+        }
+        // å†…å®¹ä¸åŒ¹é…
+        if (flag == 0) {
+            Util.showInTextArea(sql, Error.COMMAND_ERROR);
+            return null;
+        }
+        // æ•°æ®ç±»å‹ä¸åŒ¹é…
+        String tt = table;
+        if (isview)
+            tt = view;
+        if (!checkAllConditions(sql, list, tt, isview)) {
+            return null;
+        }
+        return list;
+    }
 
-	/**
-	 * ¸ù¾İ×Ö·û´®ÄÚÈİ½øĞĞÆ¥Åä²¢·Ö´Ê»ñµÃÄÚÈİ£¬¸ù¾İ¶ººÅ£¬and£¬ or·Ö´Ê
-	 * 
-	 * @param match
-	 *            Æ¥ÅäµÄ±í´ïÊ½
-	 * @param split
-	 *            ·Ö¸ô·û
-	 * @param condition
-	 *            Ô­×Ö·û´®
-	 * @return
-	 */
-	public static List<ItemCondition> getSingleCondition(String match, String split, String content) {
-		pattern = Pattern.compile(match);
-		matcher = pattern.matcher(content);
-		if (matcher.matches()) {
-			List<ItemCondition> list = new LinkedList<ItemCondition>();
-			String items[] = { content };
-			if (split != null) {
-				items = content.split(split);
-			}
-			for (int i = 0; i < items.length; i++) {
-				items[i] = items[i].trim();
-				pattern = Pattern.compile("([a-z0-9_]+) ?(>|<|=|!=) ?(.+)");
-				matcher = pattern.matcher(items[i]);
-				if (matcher.matches()) {
-					list.add(new ItemCondition(matcher.group(1).trim(), matcher.group(2).trim(),
-							matcher.group(3).trim()));
-				}
-			}
-			return list;
-		}
-		return null;
-	}
+    /**
+     * æ ¹æ®å­—ç¬¦ä¸²å†…å®¹è¿›è¡ŒåŒ¹é…å¹¶åˆ†è¯è·å¾—å†…å®¹ï¼Œæ ¹æ®é€—å·ï¼Œandï¼Œ oråˆ†è¯
+     *
+     * @param match     åŒ¹é…çš„è¡¨è¾¾å¼
+     * @param split     åˆ†éš”ç¬¦
+     * @param condition åŸå­—ç¬¦ä¸²
+     * @return
+     */
+    public static List<ItemCondition> getSingleCondition(String match, String split, String content) {
+        pattern = Pattern.compile(match);
+        matcher = pattern.matcher(content);
+        if (matcher.matches()) {
+            List<ItemCondition> list = new LinkedList<ItemCondition>();
+            String items[] = {content};
+            if (split != null) {
+                items = content.split(split);
+            }
+            for (int i = 0; i < items.length; i++) {
+                items[i] = items[i].trim();
+                pattern = Pattern.compile("([a-z0-9_]+) ?(>|<|=|!=) ?(.+)");
+                matcher = pattern.matcher(items[i]);
+                if (matcher.matches()) {
+                    list.add(new ItemCondition(matcher.group(1).trim(), matcher.group(2).trim(),
+                            matcher.group(3).trim()));
+                }
+            }
+            return list;
+        }
+        return null;
+    }
 
-	/**
-	 * ¼ì²éwhere×Ó¾äÖĞµÄÃ¿Ò»¸öÌõ¼şÊôĞÔÊÇ·ñÕıÈ·£¬ÀàĞÍÊÇ·ñÆ¥Åä user = 123 and name = 123
-	 * 
-	 * @param list
-	 * @return
-	 */
-	public static boolean checkAllConditions(String sql, List<ItemCondition> list, String table, boolean isview) {
-		try {
-			JSONArray items;
-			if (isview) {
-				items = Constant.currentdatabase.getJSONObject("view").getJSONObject(table).getJSONArray("items");
-			} else {
-				items = Constant.currentdatabase.getJSONObject("table").getJSONObject(table).getJSONArray("items");
-			}
-			Iterator<ItemCondition> it = list.iterator();
-			while (it.hasNext()) {
-				ItemCondition temp = it.next();
-				boolean match = false;
-				for (int j = 0; j < items.length(); j++) {
-					JSONObject item = items.getJSONObject(j);
-					if (temp.getNature().equals(item.getString("nature"))) {// ÊôĞÔÆ¥Åä£¬ÔÙÆ¥ÅäÊı¾İÀàĞÍ
-						if (item.getString("type").equals("varchar")) {
-							if (!(temp.getOperation().equals("=") || temp.getOperation().equals("!="))) {
-								Util.showInTextArea(sql, Error.DATATYPE_NOT_MATCH + " : " + temp.getNature());
-								return false;
-							}
-						} else if (item.getString("type").equals("int")) {
-							try {
-								Integer.valueOf(temp.getValue());
-							} catch (Exception e) {
-								Util.showInTextArea(sql, Error.DATATYPE_NOT_MATCH + " : " + temp.getNature());
-								return false;
-							}
-						} else {
-							try {
-								Double.valueOf(temp.getValue());
-							} catch (Exception e) {
-								Util.showInTextArea(sql, Error.DATATYPE_NOT_MATCH + " : " + temp.getNature());
-								return false;
-							}
-						}
-						match = true;
-						break;
-					}
-				}
-				if (!match) {
-					Util.showInTextArea(sql, Error.ATTR_NOT_EXIST + " : " + temp.getNature());
-					return false;
-				}
-			}
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
+    /**
+     * æ£€æŸ¥whereå­å¥ä¸­çš„æ¯ä¸€ä¸ªæ¡ä»¶å±æ€§æ˜¯å¦æ­£ç¡®ï¼Œç±»å‹æ˜¯å¦åŒ¹é… user = 123 and name = 123
+     *
+     * @param list
+     * @return
+     */
+    public static boolean checkAllConditions(String sql, List<ItemCondition> list, String table, boolean isview) {
+        try {
+            JSONArray items;
+            if (isview) {
+                items = Constant.currentdatabase.getJSONObject("view").getJSONObject(table).getJSONArray("items");
+            } else {
+                items = Constant.currentdatabase.getJSONObject("table").getJSONObject(table).getJSONArray("items");
+            }
+            Iterator<ItemCondition> it = list.iterator();
+            while (it.hasNext()) {
+                ItemCondition temp = it.next();
+                boolean match = false;
+                for (int j = 0; j < items.length(); j++) {
+                    JSONObject item = items.getJSONObject(j);
+                    if (temp.getNature().equals(item.getString("nature"))) {// å±æ€§åŒ¹é…ï¼Œå†åŒ¹é…æ•°æ®ç±»å‹
+                        if (item.getString("type").equals("varchar")) {
+                            if (!(temp.getOperation().equals("=") || temp.getOperation().equals("!="))) {
+                                Util.showInTextArea(sql, Error.DATATYPE_NOT_MATCH + " : " + temp.getNature());
+                                return false;
+                            }
+                        } else if (item.getString("type").equals("int")) {
+                            try {
+                                Integer.valueOf(temp.getValue());
+                            } catch (Exception e) {
+                                Util.showInTextArea(sql, Error.DATATYPE_NOT_MATCH + " : " + temp.getNature());
+                                return false;
+                            }
+                        } else {
+                            try {
+                                Double.valueOf(temp.getValue());
+                            } catch (Exception e) {
+                                Util.showInTextArea(sql, Error.DATATYPE_NOT_MATCH + " : " + temp.getNature());
+                                return false;
+                            }
+                        }
+                        match = true;
+                        break;
+                    }
+                }
+                if (!match) {
+                    Util.showInTextArea(sql, Error.ATTR_NOT_EXIST + " : " + temp.getNature());
+                    return false;
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
-	/**
-	 * Ã¿Ò»ÌõÊı¾İÆ¥Åäand
-	 */
-	public static void getDataWithAndCondition(List<ItemCondition> list, String table) {
-		Iterator<String[]> it = alldata.iterator();
-		while (it.hasNext()) {
-			String[] arr = it.next();
-			if (arr.length > 0) {
-				for (int j = 0; j < list.size(); j++) {
-					ItemCondition temp = list.get(j);
-					int pos = Util.getNaturePosition(table, temp.getNature(), false);
-					if (temp.getOperation().equals("=")) {
-						if (!arr[pos].equals(temp.getValue())) {
-							aalldata.add(arr);
-							it.remove();
-							break;
-						}
-					} else if (temp.getOperation().equals("!=")) {
-						if (arr[pos].equals(temp.getValue())) {
-							aalldata.add(arr);
-							it.remove();
-							break;
-						}
-					} else if (temp.getOperation().equals(">")) {
-						if (Double.valueOf(arr[pos]) <= Double.valueOf(temp.getValue())) {
-							aalldata.add(arr);
-							it.remove();
-							break;
-						}
-					} else if (temp.getOperation().equals("<")) {
-						if (Double.valueOf(arr[pos]) >= Double.valueOf(temp.getValue())) {
-							aalldata.add(arr);
-							it.remove();
-							break;
-						}
-					}
-				}
-			}
-		}
-	}
+    /**
+     * æ¯ä¸€æ¡æ•°æ®åŒ¹é…and
+     */
+    public static void getDataWithAndCondition(List<ItemCondition> list, String table) {
+        Iterator<String[]> it = alldata.iterator();
+        while (it.hasNext()) {
+            String[] arr = it.next();
+            if (arr.length > 0) {
+                for (int j = 0; j < list.size(); j++) {
+                    ItemCondition temp = list.get(j);
+                    int pos = Util.getNaturePosition(table, temp.getNature(), false);
+                    if (temp.getOperation().equals("=")) {
+                        if (!arr[pos].equals(temp.getValue())) {
+                            aalldata.add(arr);
+                            it.remove();
+                            break;
+                        }
+                    } else if (temp.getOperation().equals("!=")) {
+                        if (arr[pos].equals(temp.getValue())) {
+                            aalldata.add(arr);
+                            it.remove();
+                            break;
+                        }
+                    } else if (temp.getOperation().equals(">")) {
+                        if (Double.valueOf(arr[pos]) <= Double.valueOf(temp.getValue())) {
+                            aalldata.add(arr);
+                            it.remove();
+                            break;
+                        }
+                    } else if (temp.getOperation().equals("<")) {
+                        if (Double.valueOf(arr[pos]) >= Double.valueOf(temp.getValue())) {
+                            aalldata.add(arr);
+                            it.remove();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-	/**
-	 * Ã¿Ò»ÌõÊı¾İÆ¥Åäor
-	 */
-	public static void getDataWithOrCondition(List<ItemCondition> list, String table) {
-		Iterator<String[]> it = alldata.iterator();
-		while (it.hasNext()) {
-			String[] arr = it.next();
-			if (arr.length > 0) {
-				boolean is = false;
-				for (int j = 0; j < list.size(); j++) {
-					ItemCondition temp = list.get(j);
-					int pos = Util.getNaturePosition(table, temp.getNature(), false);
-					if (temp.getOperation().equals("=")) {
-						if (arr[pos].equals(temp.getValue())) {
-							is = true;
-							break;
-						}
-					} else if (temp.getOperation().equals("!=")) {
-						if (!arr[pos].equals(temp.getValue())) {
-							is = true;
-							break;
-						}
-					} else if (temp.getOperation().equals(">")) {
-						if (Double.valueOf(arr[pos]) > Double.valueOf(temp.getValue())) {
-							is = true;
-							break;
-						}
-					} else if (temp.getOperation().equals("<")) {
-						if (Double.valueOf(arr[pos]) < Double.valueOf(temp.getValue())) {
-							is = true;
-							break;
-						}
-					}
-				}
-				if (!is) {
-					aalldata.add(arr);
-					it.remove();
-				}
-			}
-		}
-	}
+    /**
+     * æ¯ä¸€æ¡æ•°æ®åŒ¹é…or
+     */
+    public static void getDataWithOrCondition(List<ItemCondition> list, String table) {
+        Iterator<String[]> it = alldata.iterator();
+        while (it.hasNext()) {
+            String[] arr = it.next();
+            if (arr.length > 0) {
+                boolean is = false;
+                for (int j = 0; j < list.size(); j++) {
+                    ItemCondition temp = list.get(j);
+                    int pos = Util.getNaturePosition(table, temp.getNature(), false);
+                    if (temp.getOperation().equals("=")) {
+                        if (arr[pos].equals(temp.getValue())) {
+                            is = true;
+                            break;
+                        }
+                    } else if (temp.getOperation().equals("!=")) {
+                        if (!arr[pos].equals(temp.getValue())) {
+                            is = true;
+                            break;
+                        }
+                    } else if (temp.getOperation().equals(">")) {
+                        if (Double.valueOf(arr[pos]) > Double.valueOf(temp.getValue())) {
+                            is = true;
+                            break;
+                        }
+                    } else if (temp.getOperation().equals("<")) {
+                        if (Double.valueOf(arr[pos]) < Double.valueOf(temp.getValue())) {
+                            is = true;
+                            break;
+                        }
+                    }
+                }
+                if (!is) {
+                    aalldata.add(arr);
+                    it.remove();
+                }
+            }
+        }
+    }
 }

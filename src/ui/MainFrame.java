@@ -1,103 +1,97 @@
 package ui;
 
+import preprocess.PreProcess;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-
-import preprocess.PreProcess;
-
 /**
- * ½çÃæÀà
- * @author WSL
+ * ç•Œé¢ç±»
  *
+ * @author WSL
  */
 public class MainFrame extends JFrame {
 
-	private static final long serialVersionUID = 1L;
-	private JFrame frame; // Ö÷´°Ìå
-	public static JTextArea output;// Êä³ö¿ò
-	private JTextArea input;// ÊäÈë¿ò
-	private JButton submit;// Ìá½»°´Å¥
-	private JButton clear;// Çå¿Õ°´Å¥
+    private static final long serialVersionUID = 1L;
+    private JFrame frame; // ä¸»çª—ä½“
+    public static JTextArea output;// è¾“å‡ºæ¡†
+    private JTextArea input;// è¾“å…¥æ¡†
+    private JButton submit;// æäº¤æŒ‰é’®
+    private JButton clear;// æ¸…ç©ºæŒ‰é’®
 
-	public MainFrame() {
-		initialize();
-	}
+    public MainFrame() {
+        initialize();
+    }
 
-	/**
-	 * ³õÊ¼»¯´°¿Ú
-	 */
-	private void initialize() {
-		frame = new JFrame();
-		try {
-			  
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setBounds(350, 50, 700, 500);
-		frame.getContentPane().setLayout(null);
-		frame.setTitle("MyDBMS");
+    /**
+     * åˆå§‹åŒ–çª—å£
+     */
+    private void initialize() {
+        frame = new JFrame();
+        try {
 
-		// Ìá½»°´Å¥
-		submit = new JButton("È·¶¨");
-		submit.setBounds(200, 430, 80, 30);
-		submit.addActionListener(new listenSubmit());
-		frame.add(submit);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setBounds(350, 50, 700, 500);
+        frame.getContentPane().setLayout(null);
+        frame.setTitle("MyDBMS");
 
-		// Çå¿Õ°´Å¥
-		clear = new JButton("Çå¿Õ");
-		clear.setBounds(400, 430, 80, 30);
-		clear.addActionListener(new listenClear());
-		frame.add(clear);
+        // æäº¤æŒ‰é’®
+        submit = new JButton("ç¡®å®š");
+        submit.setBounds(200, 430, 80, 30);
+        submit.addActionListener(new listenSubmit());
+        frame.add(submit);
 
-		// Êä³ö¿ò
-		output = new JTextArea();
-		output.setBounds(5, 5, 670, 300);
-		JScrollPane jsp = new JScrollPane(output);
-		jsp.setAutoscrolls(true);
-		jsp.setBounds(5, 5, 670, 300);
-		frame.add(jsp);
+        // æ¸…ç©ºæŒ‰é’®
+        clear = new JButton("æ¸…ç©º");
+        clear.setBounds(400, 430, 80, 30);
+        clear.addActionListener(new listenClear());
+        frame.add(clear);
 
-		// ÊäÈë¿ò
-		input = new JTextArea();
-		input.setBounds(5, 320, 670, 100);
-		JScrollPane jsp1 = new JScrollPane(input);
-		jsp1.setBounds(5, 320, 670, 100);
-		frame.add(jsp1);
-		frame.setVisible(true);
-	}
+        // è¾“å‡ºæ¡†
+        output = new JTextArea();
+        output.setBounds(5, 5, 670, 300);
+        JScrollPane jsp = new JScrollPane(output);
+        jsp.setAutoscrolls(true);
+        jsp.setBounds(5, 5, 670, 300);
+        frame.add(jsp);
 
-	/**
-	 * ¼àÌıÈ·¶¨°´Å¥ÊÂ¼ş
-	 * 
-	 * @author WSL
-	 *
-	 */
-	private class listenSubmit implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			String sql = input.getText();
-			if (!sql.equals("")) {
-				PreProcess.preprocessSql(sql);
-				input.setText("");
-			}
-		}
-	}
+        // è¾“å…¥æ¡†
+        input = new JTextArea();
+        input.setBounds(5, 320, 670, 100);
+        JScrollPane jsp1 = new JScrollPane(input);
+        jsp1.setBounds(5, 320, 670, 100);
+        frame.add(jsp1);
+        frame.setVisible(true);
+    }
 
-	/**
-	 * ¼àÌıÇå¿Õ°´Å¥ÊÂ¼ş
-	 * 
-	 * @author WSL
-	 *
-	 */
-	private class listenClear implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			input.setText("");
-			output.setText("");
-		}
-	}
+    /**
+     * ç›‘å¬ç¡®å®šæŒ‰é’®äº‹ä»¶
+     *
+     * @author WSL
+     */
+    private class listenSubmit implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            String sql = input.getText();
+            if (!sql.equals("")) {
+                PreProcess.preprocessSql(sql);
+                input.setText("");
+            }
+        }
+    }
+
+    /**
+     * ç›‘å¬æ¸…ç©ºæŒ‰é’®äº‹ä»¶
+     *
+     * @author WSL
+     */
+    private class listenClear implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            input.setText("");
+            output.setText("");
+        }
+    }
 }

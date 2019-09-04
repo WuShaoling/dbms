@@ -1,278 +1,278 @@
 package process;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import preprocess.Constant;
+import preprocess.Error;
+import preprocess.Util;
+
 import java.io.File;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import preprocess.Constant;
-import preprocess.Error;
-import preprocess.Util;
-
 /**
- * CreateÓï¾ä
- * 
- * @author WSL
+ * Createè¯­å¥
  *
+ * @author WSL
  */
 public class Create {
-	private static String[] arr = null;
-	private static String sql = null;
-	private static Pattern pattern;
-	private static Matcher matcher;
-	private static String table = null;
-	private static String view = null;
-	private static String view_content = null;;
+    private static String[] arr = null;
+    private static String sql = null;
+    private static Pattern pattern;
+    private static Matcher matcher;
+    private static String table = null;
+    private static String view = null;
+    private static String view_content = null;
+    ;
 
-	public static void Check(String[] arrs) {
-		pattern = null;
-		matcher = null;
-		table = null;
-		view = null;
-		view_content = null;
-		arr = arrs;
-		sql = Util.arrayToString(arr);
-		if (arr.length >= 3) {
-			switch (arr[1]) {
-			case "database":
-				createDatabase();
-				break;
-			case "table":
-				createTable();
-				break;
-			case "user":
-				createUser();
-				break;
-			case "view":
-				createView();
-				break;
-			default:
-				Util.showInTextArea(sql, Error.COMMAND_ERROR);
-				break;
-			}
-		} else {
-			Util.showInTextArea(sql, Error.COMMAND_ERROR);
-		}
-	}
+    public static void Check(String[] arrs) {
+        pattern = null;
+        matcher = null;
+        table = null;
+        view = null;
+        view_content = null;
+        arr = arrs;
+        sql = Util.arrayToString(arr);
+        if (arr.length >= 3) {
+            switch (arr[1]) {
+                case "database":
+                    createDatabase();
+                    break;
+                case "table":
+                    createTable();
+                    break;
+                case "user":
+                    createUser();
+                    break;
+                case "view":
+                    createView();
+                    break;
+                default:
+                    Util.showInTextArea(sql, Error.COMMAND_ERROR);
+                    break;
+            }
+        } else {
+            Util.showInTextArea(sql, Error.COMMAND_ERROR);
+        }
+    }
 
-	/**
-	 * ´´½¨Êı¾İ¿â
-	 */
-	public static void createDatabase() {
-		try {
-			// ¼ì²éÓï·¨
-			if (!sql.matches("create database [a-z_][a-z0-9_]{0,99}")) {
-				Util.showInTextArea(sql, Error.COMMAND_ERROR);
-				return;
-			}
-			// ¼ì²éÈ¨ÏŞ
-			if (!CheckPermission.checkCreateDatabasePermission()) {
-				Util.showInTextArea(sql, Error.ACCESS_DENIED);
-				return;
-			}
-			// Êı¾İ¿âÊÇ·ñÒÑ´æÔÚ
-			if (Constant.DICTIONARY.has(arr[2])) {
-				Util.showInTextArea(sql, Error.DATABASE_EXSIT + " : " + arr[2]);
-				return;
-			}
-			// Ö´ĞĞ
-			JSONObject temp = new JSONObject();
-			temp.put("table", new JSONObject());
-			temp.put("view", new JSONObject());
-			Constant.DICTIONARY.put(arr[2], temp);
-			Util.writeData(Constant.PATH_DICTIONARY, Constant.DICTIONARY.toString());
-			File file = new File(Constant.PATH_ROOT, arr[2]);
-			if (!file.exists())
-				file.mkdir();
-			Util.showInTextArea(sql, "ok, a database create success");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    /**
+     * åˆ›å»ºæ•°æ®åº“
+     */
+    public static void createDatabase() {
+        try {
+            // æ£€æŸ¥è¯­æ³•
+            if (!sql.matches("create database [a-z_][a-z0-9_]{0,99}")) {
+                Util.showInTextArea(sql, Error.COMMAND_ERROR);
+                return;
+            }
+            // æ£€æŸ¥æƒé™
+            if (!CheckPermission.checkCreateDatabasePermission()) {
+                Util.showInTextArea(sql, Error.ACCESS_DENIED);
+                return;
+            }
+            // æ•°æ®åº“æ˜¯å¦å·²å­˜åœ¨
+            if (Constant.DICTIONARY.has(arr[2])) {
+                Util.showInTextArea(sql, Error.DATABASE_EXSIT + " : " + arr[2]);
+                return;
+            }
+            // æ‰§è¡Œ
+            JSONObject temp = new JSONObject();
+            temp.put("table", new JSONObject());
+            temp.put("view", new JSONObject());
+            Constant.DICTIONARY.put(arr[2], temp);
+            Util.writeData(Constant.PATH_DICTIONARY, Constant.DICTIONARY.toString());
+            File file = new File(Constant.PATH_ROOT, arr[2]);
+            if (!file.exists())
+                file.mkdir();
+            Util.showInTextArea(sql, "ok, a database create success");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * ´´½¨ÊÓÍ¼ create view v1 as select name, age from student
-	 */
-	public static void createView() {
-		try {
-			// ÊÇ·ñÑ¡ÖĞÊı¾İ¿â
-			if (Constant.currentdatabase == null) {
-				Util.showInTextArea(sql, Error.NO_DATABASE_SELECTED);
-				return;
-			}
-			// ¼ì²éÈ¨ÏŞ
-			if (!CheckPermission.checkCreateViewPermission()) {
-				Util.showInTextArea(sql, Error.ACCESS_DENIED);
-				return;
-			}
-			// ³õ²½¼ì²éÓï·¨
-			if (!checkCreateViewGrammar()) {
-				Util.showInTextArea(sql, Error.COMMAND_ERROR);
-				return;
-			}
-			// ²éÖØ
-			if (Constant.currentdatabase.getJSONObject("view").has(view)) {
-				Util.showInTextArea(sql, Error.VIEW_EXIST + " : " + view);
-				return;
-			}
-			// Ö´ĞĞ
-			JSONObject temp_view = new JSONObject();
-			temp_view.put("content", view_content);
-			JSONArray array = new JSONArray();
-			String natures[] = Select.natures.split(",");
-			JSONArray tablenatures = Constant.currentdatabase.getJSONObject("table").getJSONObject(Select.table)
-					.getJSONArray("items");
-			for (int i = 0; i < tablenatures.length(); i++) {
-				for (int j = 0; j < natures.length; j++) {
-					if (tablenatures.getJSONObject(i).getString("nature").equals(natures[j].trim())) {
-						array.put(tablenatures.getJSONObject(i));
-					}
-				}
-			}
-			JSONObject views = new JSONObject();
-			views.put("content", view_content);
-			views.put("items", array);
-			views.put("table", Select.table);
-			Constant.currentdatabase.getJSONObject("view").put(view, views);
-			Util.writeData(Constant.PATH_DICTIONARY, Constant.DICTIONARY.toString());
-			Util.showInTextArea(sql, "ok, a view create success");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    /**
+     * åˆ›å»ºè§†å›¾ create view v1 as select name, age from student
+     */
+    public static void createView() {
+        try {
+            // æ˜¯å¦é€‰ä¸­æ•°æ®åº“
+            if (Constant.currentdatabase == null) {
+                Util.showInTextArea(sql, Error.NO_DATABASE_SELECTED);
+                return;
+            }
+            // æ£€æŸ¥æƒé™
+            if (!CheckPermission.checkCreateViewPermission()) {
+                Util.showInTextArea(sql, Error.ACCESS_DENIED);
+                return;
+            }
+            // åˆæ­¥æ£€æŸ¥è¯­æ³•
+            if (!checkCreateViewGrammar()) {
+                Util.showInTextArea(sql, Error.COMMAND_ERROR);
+                return;
+            }
+            // æŸ¥é‡
+            if (Constant.currentdatabase.getJSONObject("view").has(view)) {
+                Util.showInTextArea(sql, Error.VIEW_EXIST + " : " + view);
+                return;
+            }
+            // æ‰§è¡Œ
+            JSONObject temp_view = new JSONObject();
+            temp_view.put("content", view_content);
+            JSONArray array = new JSONArray();
+            String natures[] = Select.natures.split(",");
+            JSONArray tablenatures = Constant.currentdatabase.getJSONObject("table").getJSONObject(Select.table)
+                    .getJSONArray("items");
+            for (int i = 0; i < tablenatures.length(); i++) {
+                for (int j = 0; j < natures.length; j++) {
+                    if (tablenatures.getJSONObject(i).getString("nature").equals(natures[j].trim())) {
+                        array.put(tablenatures.getJSONObject(i));
+                    }
+                }
+            }
+            JSONObject views = new JSONObject();
+            views.put("content", view_content);
+            views.put("items", array);
+            views.put("table", Select.table);
+            Constant.currentdatabase.getJSONObject("view").put(view, views);
+            Util.writeData(Constant.PATH_DICTIONARY, Constant.DICTIONARY.toString());
+            Util.showInTextArea(sql, "ok, a view create success");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * ´´½¨±í
-	 */
-	public static void createTable() {
-		try {
-			// ÊÇ·ñÑ¡ÖĞÊı¾İ¿â
-			if (Constant.currentdatabase == null) {
-				Util.showInTextArea(sql, Error.NO_DATABASE_SELECTED);
-				return;
-			}
-			// ¼ì²éÈ¨ÏŞ
-			if (!CheckPermission.checkCreateTablePermission()) {
-				Util.showInTextArea(sql, Error.ACCESS_DENIED);
-				return;
-			}
-			// ¼ì²éÓï·¨
-			if (!checkCreateTableGrammar()) {
-				Util.showInTextArea(sql, Error.COMMAND_ERROR);
-				return;
-			}
-			// ²éÖØ
-			if (Constant.currentdatabase.getJSONObject("table").has(table)) {
-				Util.showInTextArea(sql, Error.TABLE_EXIST + " : " + table);
-				return;
-			}
-			String str_natures = sql.substring(sql.indexOf("(") + 1, sql.lastIndexOf(")")).trim();
-			String[] natures = str_natures.split(",");
-			JSONArray items = new JSONArray();
-			for (int i = 0; i < natures.length; i++) {
-				String[] elem = natures[i].trim().split(" ");
-				JSONObject temp = new JSONObject();
-				temp.put("nature", elem[0].trim());
-				temp.put("type", elem[1].trim());
-				if (elem.length == 3) {
-					temp.put("limit", elem[2].trim());
-				} else if (elem.length == 4) {
-					temp.put("limit", elem[2].trim() + " " + elem[3].trim());
-				}
-				items.put(temp);
-			}
-			JSONObject table1 = new JSONObject();
-			table1.put("size", 0);
-			table1.put("items", items);
-			Constant.currentdatabase.getJSONObject("table").put(table, table1);
-			Util.writeData(Constant.PATH_DICTIONARY, Constant.DICTIONARY.toString());
-			Util.creatFile(Constant.PATH_ROOT + Constant.databasename + "/" + table + ".sql");
-			Util.showInTextArea(sql, "ok, a table create success");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    /**
+     * åˆ›å»ºè¡¨
+     */
+    public static void createTable() {
+        try {
+            // æ˜¯å¦é€‰ä¸­æ•°æ®åº“
+            if (Constant.currentdatabase == null) {
+                Util.showInTextArea(sql, Error.NO_DATABASE_SELECTED);
+                return;
+            }
+            // æ£€æŸ¥æƒé™
+            if (!CheckPermission.checkCreateTablePermission()) {
+                Util.showInTextArea(sql, Error.ACCESS_DENIED);
+                return;
+            }
+            // æ£€æŸ¥è¯­æ³•
+            if (!checkCreateTableGrammar()) {
+                Util.showInTextArea(sql, Error.COMMAND_ERROR);
+                return;
+            }
+            // æŸ¥é‡
+            if (Constant.currentdatabase.getJSONObject("table").has(table)) {
+                Util.showInTextArea(sql, Error.TABLE_EXIST + " : " + table);
+                return;
+            }
+            String str_natures = sql.substring(sql.indexOf("(") + 1, sql.lastIndexOf(")")).trim();
+            String[] natures = str_natures.split(",");
+            JSONArray items = new JSONArray();
+            for (int i = 0; i < natures.length; i++) {
+                String[] elem = natures[i].trim().split(" ");
+                JSONObject temp = new JSONObject();
+                temp.put("nature", elem[0].trim());
+                temp.put("type", elem[1].trim());
+                if (elem.length == 3) {
+                    temp.put("limit", elem[2].trim());
+                } else if (elem.length == 4) {
+                    temp.put("limit", elem[2].trim() + " " + elem[3].trim());
+                }
+                items.put(temp);
+            }
+            JSONObject table1 = new JSONObject();
+            table1.put("size", 0);
+            table1.put("items", items);
+            Constant.currentdatabase.getJSONObject("table").put(table, table1);
+            Util.writeData(Constant.PATH_DICTIONARY, Constant.DICTIONARY.toString());
+            Util.creatFile(Constant.PATH_ROOT + Constant.databasename + "/" + table + ".sql");
+            Util.showInTextArea(sql, "ok, a table create success");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * ´´½¨ÓÃ»§
-	 */
-	public static void createUser() {
-		try {
-			// ¼ì²éÓï·¨
-			if (!sql.matches("create user [a-z_][a-z0-9_]{0,99} \\w{1,100}")) {
-				Util.showInTextArea(sql, Error.COMMAND_ERROR);
-				return;
-			}
-			// ¼ì²éÈ¨ÏŞ
-			if (!CheckPermission.checkCreateUserPermission()) {
-				Util.showInTextArea(sql, Error.ACCESS_DENIED);
-				return;
-			}
-			// ÊÇ·ñÒÑ´æÔÚ
-			if (Constant.USERS.has(arr[2])) {
-				Util.showInTextArea(sql, Error.USER_EXIST + " : " + arr[2]);
-				return;
-			}
-			JSONObject u = new JSONObject();
-			u.put("password", arr[3]);
-			Constant.USERS.put(arr[2], u);
-			Util.writeData(Constant.PATH_USERS, Constant.USERS.toString());
-			Util.showInTextArea(sql, "ok");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	/**
-	 * ´´½¨Êı¾İ±íÓï·¨
-	 * 
-	 * @return
-	 */
-	public static boolean checkCreateTableGrammar() {
-		final String matchCreateTable = "create table [a-z_][a-z0-9_]{0,99} ?\\( ?( ?[a-z_][a-z0-9_]{0,99} (( ?int ?)|( ?do"
-				+ "uble ?)|( ?varchar ?))(( ?primary key ?)|( ?not null ?)|( unique ?))?)( ?, ?[a-z_][a-z0-9_]{0,99} (( ?i"
-				+ "nt ?)|( ?double ?)|( ?varchar ?))(( ?primary key ?)|( ?not null ?)|( unique ?))?){0,} ?\\)";
-		pattern = Pattern.compile(matchCreateTable);
-		matcher = pattern.matcher(sql);
-		if (matcher.matches()) {
-			table = sql.substring(13, sql.indexOf("(")).trim();
-			return true;
-		}
-		return false;
-	}
+    /**
+     * åˆ›å»ºç”¨æˆ·
+     */
+    public static void createUser() {
+        try {
+            // æ£€æŸ¥è¯­æ³•
+            if (!sql.matches("create user [a-z_][a-z0-9_]{0,99} \\w{1,100}")) {
+                Util.showInTextArea(sql, Error.COMMAND_ERROR);
+                return;
+            }
+            // æ£€æŸ¥æƒé™
+            if (!CheckPermission.checkCreateUserPermission()) {
+                Util.showInTextArea(sql, Error.ACCESS_DENIED);
+                return;
+            }
+            // æ˜¯å¦å·²å­˜åœ¨
+            if (Constant.USERS.has(arr[2])) {
+                Util.showInTextArea(sql, Error.USER_EXIST + " : " + arr[2]);
+                return;
+            }
+            JSONObject u = new JSONObject();
+            u.put("password", arr[3]);
+            Constant.USERS.put(arr[2], u);
+            Util.writeData(Constant.PATH_USERS, Constant.USERS.toString());
+            Util.showInTextArea(sql, "ok");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * ¼ì²é´´½¨ÊÓÍ¼Óï·¨
-	 * 
-	 * @return
-	 */
-	private static boolean checkCreateViewGrammar() {
-		String match = "create view ([a-z_][a-z0-9_]{0,99}) as (.+)";
-		pattern = Pattern.compile(match);
-		matcher = pattern.matcher(sql);
-		if (matcher.matches()) {
-			view = matcher.group(1);
-			view_content = matcher.group(2);
-			// ¼ì²éselectÖĞµÄÓï·¨
-			if (!Select.checkSelectGrammer(view_content)) {
-				Util.showInTextArea(sql, Error.COMMAND_ERROR);
-				return false;
-			}
-			// »ñµÃËùÓĞµÄÊôĞÔ
-			String[] natures_array = Select.natures.split(",");
-			for (int i = 0; i < natures_array.length; i++)
-				natures_array[i] = natures_array[i].trim();
-			List<String> natures_list = Util.getNaturesList(Select.table, false);
-			// ¼ì²éËùÓĞµÄÊôĞÔÊÇ·ñ´æÔÚ
-			String result = Util.checkAllNatureExsit(natures_list, natures_array);
-			if (result != null) {
-				Util.showInTextArea(sql, Error.ATTR_NOT_EXIST + " : " + result);
-				return false;
-			}
-			return true;
-		}
-		return false;
-	}
+    /**
+     * åˆ›å»ºæ•°æ®è¡¨è¯­æ³•
+     *
+     * @return
+     */
+    public static boolean checkCreateTableGrammar() {
+        final String matchCreateTable = "create table [a-z_][a-z0-9_]{0,99} ?\\( ?( ?[a-z_][a-z0-9_]{0,99} (( ?int ?)|( ?do"
+                + "uble ?)|( ?varchar ?))(( ?primary key ?)|( ?not null ?)|( unique ?))?)( ?, ?[a-z_][a-z0-9_]{0,99} (( ?i"
+                + "nt ?)|( ?double ?)|( ?varchar ?))(( ?primary key ?)|( ?not null ?)|( unique ?))?){0,} ?\\)";
+        pattern = Pattern.compile(matchCreateTable);
+        matcher = pattern.matcher(sql);
+        if (matcher.matches()) {
+            table = sql.substring(13, sql.indexOf("(")).trim();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * æ£€æŸ¥åˆ›å»ºè§†å›¾è¯­æ³•
+     *
+     * @return
+     */
+    private static boolean checkCreateViewGrammar() {
+        String match = "create view ([a-z_][a-z0-9_]{0,99}) as (.+)";
+        pattern = Pattern.compile(match);
+        matcher = pattern.matcher(sql);
+        if (matcher.matches()) {
+            view = matcher.group(1);
+            view_content = matcher.group(2);
+            // æ£€æŸ¥selectä¸­çš„è¯­æ³•
+            if (!Select.checkSelectGrammer(view_content)) {
+                Util.showInTextArea(sql, Error.COMMAND_ERROR);
+                return false;
+            }
+            // è·å¾—æ‰€æœ‰çš„å±æ€§
+            String[] natures_array = Select.natures.split(",");
+            for (int i = 0; i < natures_array.length; i++)
+                natures_array[i] = natures_array[i].trim();
+            List<String> natures_list = Util.getNaturesList(Select.table, false);
+            // æ£€æŸ¥æ‰€æœ‰çš„å±æ€§æ˜¯å¦å­˜åœ¨
+            String result = Util.checkAllNatureExsit(natures_list, natures_array);
+            if (result != null) {
+                Util.showInTextArea(sql, Error.ATTR_NOT_EXIST + " : " + result);
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
 }

@@ -1,155 +1,153 @@
 package process;
 
 import org.json.JSONException;
-
 import preprocess.Constant;
 
 /**
- * ¼ì²éÈ¨ÏŞ
- * 
- * @author WSL
+ * æ£€æŸ¥æƒé™
  *
+ * @author WSL
  */
 public class CheckPermission {
 
-	/**
-	 * ¸Ä±äÊı¾İ¿âÈ¨ÏŞ
-	 * 
-	 * @return
-	 */
-	public static boolean checkUsePermission(String database) {
-		if (Constant.username.equals("root"))
-			return true;
-		try {
-			if (Constant.currentuser.has(database))
-				return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
+    /**
+     * æ”¹å˜æ•°æ®åº“æƒé™
+     *
+     * @return
+     */
+    public static boolean checkUsePermission(String database) {
+        if (Constant.username.equals("root"))
+            return true;
+        try {
+            if (Constant.currentuser.has(database))
+                return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
-	/**
-	 * ´´½¨Êı¾İ¿âÈ¨ÏŞ
-	 * 
-	 * @return
-	 */
-	public static boolean checkCreateDatabasePermission() {
-		if (Constant.username.equals("root"))
-			return true;
-		return false;
-	}
+    /**
+     * åˆ›å»ºæ•°æ®åº“æƒé™
+     *
+     * @return
+     */
+    public static boolean checkCreateDatabasePermission() {
+        if (Constant.username.equals("root"))
+            return true;
+        return false;
+    }
 
-	/**
-	 * ´´½¨Êı¾İ±íÈ¨ÏŞ
-	 * 
-	 * @return
-	 */
-	public static boolean checkCreateTablePermission() {
-		if (Constant.username.equals("root"))
-			return true;
-		return false;
-	}
-	
-	/**
-	 * ´´½¨ÊÓÍ¼È¨ÏŞ
-	 * 
-	 * @return
-	 */
-	public static boolean checkCreateViewPermission() {
-		if (Constant.username.equals("root"))
-			return true;
-		return false;
-	}
+    /**
+     * åˆ›å»ºæ•°æ®è¡¨æƒé™
+     *
+     * @return
+     */
+    public static boolean checkCreateTablePermission() {
+        if (Constant.username.equals("root"))
+            return true;
+        return false;
+    }
 
-	/**
-	 * Ìí¼ÓÓÃ»§È¨ÏŞ
-	 * 
-	 * @return
-	 */
-	public static boolean checkCreateUserPermission() {
-		if (Constant.username.equals("root"))
-			return true;
-		return false;
-	}
+    /**
+     * åˆ›å»ºè§†å›¾æƒé™
+     *
+     * @return
+     */
+    public static boolean checkCreateViewPermission() {
+        if (Constant.username.equals("root"))
+            return true;
+        return false;
+    }
 
-	/**
-	 * É¾³ıÊı¾İ¿âÈ¨ÏŞ
-	 * 
-	 * @return
-	 */
-	public static boolean checkDropDatabasePermission() {
-		if (Constant.username.equals("root"))
-			return true;
-		return false;
-	}
+    /**
+     * æ·»åŠ ç”¨æˆ·æƒé™
+     *
+     * @return
+     */
+    public static boolean checkCreateUserPermission() {
+        if (Constant.username.equals("root"))
+            return true;
+        return false;
+    }
 
-	/**
-	 * É¾³ıÓÃ»§È¨ÏŞ
-	 * 
-	 * @return
-	 */
-	public static boolean checkDropUserPermission() {
-		if (Constant.username.equals("root"))
-			return true;
-		return false;
-	}
+    /**
+     * åˆ é™¤æ•°æ®åº“æƒé™
+     *
+     * @return
+     */
+    public static boolean checkDropDatabasePermission() {
+        if (Constant.username.equals("root"))
+            return true;
+        return false;
+    }
 
-	/**
-	 * É¾³ı±íÈ¨ÏŞ
-	 * 
-	 * @return
-	 */
-	public static boolean checkDropTablePermission() {
-		if (Constant.username.equals("root"))
-			return true;
-		return false;
-	}
+    /**
+     * åˆ é™¤ç”¨æˆ·æƒé™
+     *
+     * @return
+     */
+    public static boolean checkDropUserPermission() {
+        if (Constant.username.equals("root"))
+            return true;
+        return false;
+    }
 
-	/**
-	 * É¾³ıÊÓÍ¼È¨ÏŞ
-	 * 
-	 * @return
-	 */
-	public static boolean checkDropViewPermission() {
-		if (Constant.username.equals("root"))
-			return true;
-		return false;
-	}
+    /**
+     * åˆ é™¤è¡¨æƒé™
+     *
+     * @return
+     */
+    public static boolean checkDropTablePermission() {
+        if (Constant.username.equals("root"))
+            return true;
+        return false;
+    }
 
-	/**
-	 * ¸øÓÃ»§¼ÓÈ¨ÏŞÈ¨ÏŞ
-	 * 
-	 * @return
-	 */
-	public static boolean checkGrantAndRevokePermission() {
-		if (Constant.username.equals("root"))
-			return true;
-		return false;
-	}
+    /**
+     * åˆ é™¤è§†å›¾æƒé™
+     *
+     * @return
+     */
+    public static boolean checkDropViewPermission() {
+        if (Constant.username.equals("root"))
+            return true;
+        return false;
+    }
 
-	/**
-	 * ²åÈë¡¢É¾³ı¡¢ĞŞ¸Ä¡¢Ñ¡ÔñÈ¨ÏŞ
-	 * 
-	 * @param table
-	 * @return
-	 */
-	public static boolean checkPermission(String table, boolean isview, String type) {
-		if (Constant.username.equals("root"))
-			return true;
-		try {
-			if(isview)
-				return false;
-			if (Constant.currentuser.has(Constant.databasename)) {
-				if (Constant.currentuser.getJSONObject(Constant.databasename).has(table)) {
-					if(Constant.currentuser.getJSONObject(Constant.databasename).getJSONObject(table).has(type)){
-						return true;
-					}
-				}
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
+    /**
+     * ç»™ç”¨æˆ·åŠ æƒé™æƒé™
+     *
+     * @return
+     */
+    public static boolean checkGrantAndRevokePermission() {
+        if (Constant.username.equals("root"))
+            return true;
+        return false;
+    }
+
+    /**
+     * æ’å…¥ã€åˆ é™¤ã€ä¿®æ”¹ã€é€‰æ‹©æƒé™
+     *
+     * @param table
+     * @return
+     */
+    public static boolean checkPermission(String table, boolean isview, String type) {
+        if (Constant.username.equals("root"))
+            return true;
+        try {
+            if (isview)
+                return false;
+            if (Constant.currentuser.has(Constant.databasename)) {
+                if (Constant.currentuser.getJSONObject(Constant.databasename).has(table)) {
+                    if (Constant.currentuser.getJSONObject(Constant.databasename).getJSONObject(table).has(type)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

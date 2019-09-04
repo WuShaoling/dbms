@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/src/beans/ItemCondition.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/preprocess/Constant.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/preprocess/Error.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/preprocess/Main.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/preprocess/PreProcess.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/preprocess/Util.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/process/CheckPermission.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/process/Create.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/process/Delete.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/process/Drop.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/process/GetResultWithCheck.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/process/GrantAndRevoke.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/process/Help.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/process/Insert.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/process/Select.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/process/Show.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/process/Update.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/process/Use.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/ui/MainFrame.java" charset="UTF-8" />
+  </component>
+</project>
