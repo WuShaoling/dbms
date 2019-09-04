@@ -1,92 +1,210 @@
-Ê¹ÓÃËµÃ÷
-ÓÃ»§µÇÂ¼¼°ÍË³ö
-	ÓÃ»§µÇÂ¼
-		Óï¾ä¸ñÊ½: login username password;
-		Àı¾ä£ºlogin root 123;
-	ÓÃ»§ÍË³ö
-		Óï·¨¸ñÊ½£ºexit;
-Ñ¡ÔñÊı¾İ¿â
-	Óï·¨¸ñÊ½: use database_name;
-	Àı¾ä£ºuse db1;
-´´½¨²Ù×÷
-	´´½¨Êı¾İ¿â
-		Óï·¨¸ñÊ½£ºcreate database database_name; 
-		Àı¾ä£ºcreate database db2;
-	´´½¨ÓÃ»§
-		Óï·¨¸ñÊ½£ºcreate user username password;
-		Àı¾ä£ºcreate user user1 123;
-	´´½¨»ù±¾±í
-		Óï·¨¸ñÊ½£ºcreate table table_name (ÊôĞÔÃû ÊôĞÔÀàĞÍ Ô¼ÊøÌõ¼ş);
-		Àı¾ä£ºcreate table student (sno varchar, name varchar, score int);
-	´´½¨ÊÓÍ¼
-		Óï·¨¸ñÊ½£ºcreate view view_name as select ÊôĞÔÃû1, ÊôĞÔÃû2¡­from table table_name;
-		Àı¾ä£ºcreate view vstudent as select name , grade from student;
-É¾³ı²Ù×÷
-	É¾³ıÊı¾İ¿â
-		Óï·¨¸ñÊ½£ºdrop database database_name;
-		Àı¾ä£ºdrop database db2;
-	É¾³ıÓÃ»§
-Óï·¨¸ñÊ½£ºdrop user user_name;
-Àı¾ä£ºdrop user user1;
-	É¾³ı»ù±¾±í
-		Óï·¨¸ñÊ½£ºdrop table table_name;
-		Àı¾ä£ºdrop table t1;
-	É¾³ıÊÓÍ¼
-		Óï·¨¸ñÊ½£ºdrop view view_name;
-		Àı¾ä£ºdrop view v_student;
-²åÈëÊı¾İ
-	Óï·¨¸ñÊ½£ºinsert into table_name values(value1, value2, value3);
-	Àı¾ä£ºinsert into student  values(¡°61428¡±, ¡°wsl¡±, 88);
-É¾³ıÊı¾İ
-	²»´øwhere×Ó¾ä
-		Óï·¨¸ñÊ½£ºdelete from table_name;
-		Àı¾ä£ºdelete from student;
-	´øÓĞwhere×Ó¾ä
-		Óï·¨¸ñÊ½£ºdelete from table_name where Ìõ¼ş1 (and || or) Ìõ¼ş2 ¡­;
-		Àı¾ä£ºdelete from student where name != ¡±wsl¡± and  name !=¡±hp¡±;
-¸üĞÂÊı¾İ
-	²»´øwhere×Ó¾ä
-		Óï·¨¸ñÊ½£ºupdate table_name set ÊôĞÔ1 = Öµ1, ÊôĞÔ2 = Öµ2¡­;
-		Àı¾ä£ºupodate student set score = 90;
-	´øÓĞwhere×Ó¾ä
-		Óï·¨¸ñÊ½£ºupdate table_name set ÊôĞÔ1 = Öµ1, ÊôĞÔ2 = Öµ2¡­ where Ìõ¼ş1 (and || or) Ìõ¼ş2 ¡­;
-		Àı¾ä£ºupdate student set name = "zs", score = 95 where name = "wsl";
-²éÕÒÊı¾İ
-	²é¿´ËùÓĞµÄÊı¾İ
-		Óï·¨¸ñÊ½£ºselect * from table_name;
-		Àı¾ä£ºselect * from student;
-	²é¿´·ûºÏwhere×Ó¾äÌõ¼şµÄÊı¾İ
-		Óï·¨¸ñÊ½£ºselect * from table_name where Ìõ¼ş1(and || or) Ìõ¼ş2¡­;
-		Àı¾ä£ºselect * from student where name = "ls" or name = "zl";
-	¶Ô½á¹û¼¯ÅÅĞò
-		Óï·¨¸ñÊ½£ºselect * from table_name [where Ìõ¼ş1(and || or) Ìõ¼ş2¡­] order by ÊôĞÔ1 (asc || desc);
-		Àı¾ä£ºselect * from student where score > 60 order by sno asc;
-	¾Û¼¯º¯ÊıµÄÊ¹ÓÃ
-		Óï·¨¸ñÊ½£ºselect count||avg||sum||min||max (ÊôĞÔÃû) from table_name where Ìõ¼ş1(and || or) Ìõ¼ş2¡­;
-		Àı¾ä1£ºselect sum(score) from student;
-		Àı¾ä2£ºselect avg(score) from student;
-		Àı¾ä3£ºselect max(score) from student;
-		Àı¾ä4£ºselect min(score) from student;
-		Àı¾ä5£ºselect count(score) from student;
-	²éÑ¯Ö¸¶¨ÁĞµÄÊı¾İ
-		Óï·¨¸ñÊ½£ºselectÊôĞÔÃû1£¬ÊôĞÔ2¡­ from table_name (where Ìõ¼ş1(and || or) Ìõ¼ş2¡­);
-		Àı¾ä£ºselect sno, name from student where score > 60;
-È¨ÏŞ¹ÜÀí
-	ÊÚÓèÈ¨ÏŞ
-		Óï·¨¸ñÊ½£ºgrant (all privileges) || (select, delete ¡­) on table t1, t2 ¡­ to user1, user2 ¡­;
-		Àı¾ä1£ºgrant select , delete , update on table student , t1 to user1, user2;
-		Àı¾ä2£ºgrant all privileges on table t1 to u1;
-	ÊÕ»ØÈ¨ÏŞ
-		Óï·¨¸ñÊ½£ºrevoke (all privileges) || (select, delete ¡­) on table t1, t2 ¡­ from user1, user2 ¡­;
-		Àı¾ä1£ºrevoke delete , update on table student from user1;
-		Àı¾ä2£ºrevoke all privileges on table t1 from u1;
-HELP²Ù×÷
-	Êä³öµ±Ç°Êı¾İ¿âÏÂËùÓĞµÄ±íºÍÊÓÍ¼µÄĞÅÏ¢
-		Óï·¨¸ñÊ½£ºhelp database;
-		Àı¾ä£ºhelp database;
-	Êä³öÖ¸¶¨»ù±¾±íµÄÏêÏ¸ĞÅÏ¢
-		Óï·¨¸ñÊ½£ºhelp table table_name;
-		Àı¾ä£ºhelp table student;
-	Êä³öÖ¸¶¨ÊÓÍ¼µÄÏêÏ¸ĞÅÏ¢
-		Óï·¨¸ñÊ½£ºhelp view view_name;
-		Àı¾ä£ºhelp view v_student;
+# DBMS
+
+æ•°æ®åº“è¯¾ç¨‹ä½œä¸šï¼Œä½¿ç”¨ java å®ç°çš„ä¸€ä¸ª DBMS
+
+## ä½¿ç”¨ç¤ºä¾‹
+
+### ç”¨æˆ·ç™»å½•åŠé€€å‡º
+
+- ç”¨æˆ·ç™»å½•
+
+   ```bash
+   è¯­å¥æ ¼å¼: login username password;
+   ä¾‹å¥ï¼šlogin root 123;
+   ```
+
+- ç”¨æˆ·é€€å‡º
+
+   ```bash
+   è¯­æ³•æ ¼å¼ï¼šexit;
+   ```
+
+### é€‰æ‹©æ•°æ®åº“
+
+- é€‰æ‹©æ•°æ®åº“
+
+   ```bash
+   è¯­æ³•æ ¼å¼: use database_name;
+   ä¾‹å¥ï¼šuse db1;
+   ```
+
+### åˆ›å»ºæ“ä½œ
+  
+- åˆ›å»ºæ•°æ®åº“
+
+   ```bash
+   è¯­æ³•æ ¼å¼ï¼šcreate database database_name;
+   ä¾‹å¥ï¼šcreate database db2;
+   ```
+
+- åˆ›å»ºç”¨æˆ·
+
+   ```bash
+   è¯­æ³•æ ¼å¼ï¼šcreate user username password;
+   ä¾‹å¥ï¼šcreate user user1 123;
+   ```
+
+- åˆ›å»ºåŸºæœ¬è¡¨
+
+   ```bash
+   è¯­æ³•æ ¼å¼ï¼šcreate table table_name (å±æ€§å å±æ€§ç±»å‹ çº¦æŸæ¡ä»¶);
+   ä¾‹å¥ï¼šcreate table student (sno varchar, name varchar, score int);
+   ```
+
+- åˆ›å»ºè§†å›¾
+
+   ```bash
+   è¯­æ³•æ ¼å¼ï¼šcreate view view_name as select å±æ€§å1, å±æ€§å2â€¦from table table_name;
+   ä¾‹å¥ï¼šcreate view vstudent as select name , grade from student;
+   ```
+
+### åˆ é™¤æ“ä½œ
+
+- åˆ é™¤æ•°æ®åº“
+
+   ```bash
+   è¯­æ³•æ ¼å¼ï¼šdrop database database_name;
+   ä¾‹å¥ï¼šdrop database db2;
+   ```
+
+- åˆ é™¤ç”¨æˆ·
+
+   ```bash
+   è¯­æ³•æ ¼å¼ï¼šdrop user user_name;
+   ä¾‹å¥ï¼šdrop user user1;
+   ```
+
+- åˆ é™¤åŸºæœ¬è¡¨
+
+   ```bash
+   è¯­æ³•æ ¼å¼ï¼šdrop table table_name;
+   ä¾‹å¥ï¼šdrop table t1;
+   ```
+
+- åˆ é™¤è§†å›¾
+
+   ```bash
+   è¯­æ³•æ ¼å¼ï¼šdrop view view_name;
+   ä¾‹å¥ï¼šdrop view v_student;
+   ```
+
+### æ’å…¥æ•°æ®
+
+   ```bash
+   è¯­æ³•æ ¼å¼ï¼šinsert into table_name values(value1, value2, value3);
+   ä¾‹å¥ï¼šinsert into student  values(â€œ61428â€, â€œwslâ€, 88);
+   ```
+
+### åˆ é™¤æ•°æ®
+
+- ä¸å¸¦whereå­å¥
+
+   ```bash
+   è¯­æ³•æ ¼å¼ï¼šdelete from table_name;
+   ä¾‹å¥ï¼šdelete from student;
+   ```
+
+- å¸¦æœ‰whereå­å¥
+
+   ```bash
+   è¯­æ³•æ ¼å¼ï¼šdelete from table_name where æ¡ä»¶1 (and || or) æ¡ä»¶2 â€¦;
+   ä¾‹å¥ï¼šdelete from student where name != â€wslâ€ and  name !=â€hpâ€;
+   ```
+
+### æ›´æ–°æ•°æ®
+
+- ä¸å¸¦whereå­å¥
+
+   ```bash
+   è¯­æ³•æ ¼å¼ï¼šupdate table_name set å±æ€§1 = å€¼1, å±æ€§2 = å€¼2â€¦;
+   ä¾‹å¥ï¼šupodate student set score = 90;
+   ```
+
+- å¸¦æœ‰whereå­å¥
+
+   ```bash
+   è¯­æ³•æ ¼å¼ï¼šupdate table_name set å±æ€§1 = å€¼1, å±æ€§2 = å€¼2â€¦ where æ¡ä»¶1 (and || or) æ¡ä»¶2 â€¦;
+   ä¾‹å¥ï¼šupdate student set name = "zs", score = 95 where name = "wsl";
+   ```
+
+### æŸ¥æ‰¾æ•°æ®
+
+- æŸ¥çœ‹æ‰€æœ‰çš„æ•°æ®
+
+   ```bash
+   è¯­æ³•æ ¼å¼ï¼šselect * from table_name;
+   ä¾‹å¥ï¼šselect * from student;
+   ```
+
+- æŸ¥çœ‹ç¬¦åˆwhereå­å¥æ¡ä»¶çš„æ•°æ®
+
+   ```bash
+   è¯­æ³•æ ¼å¼ï¼šselect * from table_name where æ¡ä»¶1(and || or) æ¡ä»¶2â€¦;
+   ä¾‹å¥ï¼šselect * from student where name = "ls" or name = "zl";
+   ```
+
+- å¯¹ç»“æœé›†æ’åº
+
+   ```bash
+   è¯­æ³•æ ¼å¼ï¼šselect * from table_name [where æ¡ä»¶1(and || or) æ¡ä»¶2â€¦] order by å±æ€§1 (asc || desc);
+   ä¾‹å¥ï¼šselect * from student where score > 60 order by sno asc;
+   ```
+
+- èšé›†å‡½æ•°çš„ä½¿ç”¨
+
+   ```bash
+   è¯­æ³•æ ¼å¼ï¼šselect count||avg||sum||min||max (å±æ€§å) from table_name where æ¡ä»¶1(and || or) æ¡ä»¶2â€¦;
+   ä¾‹å¥1ï¼šselect sum(score) from student;
+   ä¾‹å¥2ï¼šselect avg(score) from student;
+   ä¾‹å¥3ï¼šselect max(score) from student;
+   ä¾‹å¥4ï¼šselect min(score) from student;
+   ä¾‹å¥5ï¼šselect count(score) from student;
+   ```
+
+- æŸ¥è¯¢æŒ‡å®šåˆ—çš„æ•°æ®
+
+   ```bash
+   è¯­æ³•æ ¼å¼ï¼šselectå±æ€§å1ï¼Œå±æ€§2â€¦ from table_name (where æ¡ä»¶1(and || or) æ¡ä»¶2â€¦);
+   ä¾‹å¥ï¼šselect sno, name from student where score > 60;
+   ```
+
+### æƒé™ç®¡ç†
+
+- æˆäºˆæƒé™
+
+   ```bash
+   è¯­æ³•æ ¼å¼ï¼šgrant (all privileges) || (select, delete â€¦) on table t1, t2 â€¦ to user1, user2 â€¦;
+   ä¾‹å¥1ï¼šgrant select , delete , update on table student , t1 to user1, user2;
+   ä¾‹å¥2ï¼šgrant all privileges on table t1 to u1;
+   ```
+
+- æ”¶å›æƒé™
+
+   ```bash
+   è¯­æ³•æ ¼å¼ï¼šrevoke (all privileges) || (select, delete â€¦) on table t1, t2 â€¦ from user1, user2 â€¦;
+   ä¾‹å¥1ï¼šrevoke delete , update on table student from user1;
+   ä¾‹å¥2ï¼šrevoke all privileges on table t1 from u1;
+   ```
+
+### HELPæ“ä½œ
+
+- è¾“å‡ºå½“å‰æ•°æ®åº“ä¸‹æ‰€æœ‰çš„è¡¨å’Œè§†å›¾çš„ä¿¡æ¯
+
+   ```bash
+   è¯­æ³•æ ¼å¼ï¼šhelp database;
+   ä¾‹å¥ï¼šhelp database;
+   ```
+
+- è¾“å‡ºæŒ‡å®šåŸºæœ¬è¡¨çš„è¯¦ç»†ä¿¡æ¯
+
+   ```bash
+   è¯­æ³•æ ¼å¼ï¼šhelp table table_name;
+   ä¾‹å¥ï¼šhelp table student;
+   ```
+
+- è¾“å‡ºæŒ‡å®šè§†å›¾çš„è¯¦ç»†ä¿¡æ¯
+
+   ```bash
+   è¯­æ³•æ ¼å¼ï¼šhelp view view_name;
+   ä¾‹å¥ï¼šhelp view v_student;
+   ```
