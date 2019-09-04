@@ -1,1 +1,0 @@
-{"db1":{"view":{},"table":{"t1":{"size":3,"items":[{"nature":"name","type":"varchar"},{"nature":"age","type":"int"}]}}}}

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="8699d226-ebd1-413f-a54a-a1e2743bcbfe" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.classpath" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.project" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.settings/org.eclipse.jdt.core.prefs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/beans/ItemCondition.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/preprocess/Constant.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/preprocess/Error.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/preprocess/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/preprocess/PreProcess.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/preprocess/Util.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/process/CheckPermission.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/process/Create.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/process/Delete.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/process/Drop.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/process/GetResultWithCheck.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/process/GrantAndRevoke.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/process/Help.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/process/Insert.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/process/Select.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/process/Show.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/process/Update.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/process/Use.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/ui/MainFrame$listenClear.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/ui/MainFrame$listenSubmit.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/ui/MainFrame.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dictionary.sql" beforeDir="false" afterPath="$PROJECT_DIR$/db/dictionary.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/beans/ItemCondition.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/beans/ItemCondition.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/preprocess/Constant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/preprocess/Constant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/preprocess/Error.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/preprocess/Error.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/preprocess/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/preprocess/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/preprocess/PreProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/preprocess/PreProcess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/preprocess/Util.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/preprocess/Util.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/process/CheckPermission.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/process/CheckPermission.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/process/Create.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/process/Create.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/process/Delete.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/process/Delete.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/process/Drop.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/process/Drop.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/process/GetResultWithCheck.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/process/GetResultWithCheck.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/process/GrantAndRevoke.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/process/GrantAndRevoke.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/process/Help.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/process/Help.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/process/Insert.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/process/Insert.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/process/Select.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/process/Select.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/process/Show.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/process/Show.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/process/Update.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/process/Update.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/process/Use.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/process/Use.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui/MainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/MainFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users.sql" beforeDir="false" afterPath="$PROJECT_DIR$/db/users.sql" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IgnoredFileRootStore">
+    <option name="generatedRoots">
+      <set>
+        <option value="$PROJECT_DIR$/.idea" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="1" />
+  </component>
+  <component name="ProjectId" id="1QMR7pUGY9rGcf2c2Gd26RE3DWv" />
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="android.sdk.path" value="$USER_HOME$/Library/Android/sdk" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/db" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8699d226-ebd1-413f-a54a-a1e2743bcbfe" name="Default Changelist" comment="" />
+      <created>1567578314220</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1567578314220</updated>
+      <workItem from="1567578326460" duration="1363000" />
+      <workItem from="1567580356376" duration="25000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
